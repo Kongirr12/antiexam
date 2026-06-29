@@ -6,7 +6,7 @@ window.StudentModule = {
         exams: [],
         isLoading: true
     },
- 
+  
     async render() {
         App.container.innerHTML = `
             <div class="mb-8">
