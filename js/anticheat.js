@@ -5,7 +5,7 @@ window.AntiCheat = {
     cheatCount: 0,
     maxQuota: 3, // Overridden by settings in real app
     isActive: false,
-  
+
     init(maxQuota = 3) {
         this.maxQuota = maxQuota;
         this.cheatCount = 0;
