@@ -5,7 +5,7 @@
 const API = {
     // IMPORTANT: User must set their deployed GAS Web App URL here
     BASE_URL: 'https://script.google.com/macros/s/AKfycbwv-nPp64s0C5B4CMLoaCy4Nt0cYp6068T-yXtKeE_xlPn-6feM82NXQ8wXXRxLuO-eAQ/exec',
-    
+     
     /**
      * Generic POST request to GAS
      */
