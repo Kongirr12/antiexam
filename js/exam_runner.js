@@ -24,7 +24,7 @@ window.ExamRunner = {
             window.AntiCheat.init(3);
         }
     },
-
+ 
     renderLayout() {
         // Clear main container styling to take full screen
         App.container.className = 'w-full h-screen fixed inset-0 z-40 bg-slate-50 flex flex-col overflow-hidden';
