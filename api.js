@@ -4,7 +4,7 @@
  */
 const API = {
     // IMPORTANT: User must set their deployed GAS Web App URL here
-    BASE_URL: 'YOUR_GAS_WEB_APP_URL',
+    BASE_URL: 'https://script.google.com/macros/s/AKfycbwv-nPp64s0C5B4CMLoaCy4Nt0cYp6068T-yXtKeE_xlPn-6feM82NXQ8wXXRxLuO-eAQ/exec',
     
     /**
      * Generic POST request to GAS
@@ -80,6 +80,19 @@ const API = {
                             { id: 'Q01', type: 'SingleChoice', content: 'What is the powerhouse of the cell?', score: 1 },
                             { id: 'Q02', type: 'MultipleChoice', content: 'Select all prime numbers:', score: 2 },
                             { id: 'Q03', type: 'Essay', content: 'Explain the theory of relativity $E=mc^2$.', score: 10 }
+                        ]);
+                        break;
+                    case 'getLiveSessions':
+                        resolve([
+                            { id: 'SESSION_1', studentId: 'S01', name: 'John Student', progress: 85, timeRemaining: '12:05', status: 'Online', cheatCount: 0 },
+                            { id: 'SESSION_2', studentId: 'S02', name: 'Alice Smith', progress: 40, timeRemaining: '34:20', status: 'Online', cheatCount: 1 },
+                            { id: 'SESSION_3', studentId: 'S03', name: 'Bob Jones', progress: 95, timeRemaining: '02:15', status: 'Offline', cheatCount: 3 }
+                        ]);
+                        break;
+                    case 'getPendingGrades':
+                        resolve([
+                            { id: 'ANS_1', studentName: 'Alice Smith', examName: 'Midterm Math', question: 'Explain the theory of relativity $E=mc^2$.', answer: 'It means energy equals mass times the speed of light squared. It implies that mass and energy are interchangeable.', maxScore: 10 },
+                            { id: 'ANS_2', studentName: 'John Student', examName: 'Physics Quiz', question: 'Describe Newton\\'s first law.', answer: 'An object at rest stays at rest...', maxScore: 5 }
                         ]);
                         break;
                     default:

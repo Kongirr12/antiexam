@@ -91,6 +91,15 @@ const App = {
             case 'take_exam':
                 this.renderTakeExam(data);
                 break;
+            case 'proctoring':
+                this.renderProctoring();
+                break;
+            case 'grading':
+                this.renderGrading();
+                break;
+            case 'results':
+                this.renderResults();
+                break;
             default:
                 this.container.innerHTML = `<h2 class="text-2xl font-bold text-center mt-20">404 - Not Found</h2>`;
         }
@@ -255,6 +264,24 @@ const App = {
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                             </div>
                             <span class="text-sm font-medium text-slate-700">Images</span>
+                        </button>
+                        <button onclick="App.navigate('proctoring')" class="flex flex-col items-center justify-center gap-3 p-4 rounded-xl border border-slate-100 bg-white hover:border-primary-200 hover:shadow-md transition-all group">
+                            <div class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-rose-50 group-hover:text-rose-600 transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                            </div>
+                            <span class="text-sm font-medium text-slate-700">Live Proctor</span>
+                        </button>
+                        <button onclick="App.navigate('grading')" class="flex flex-col items-center justify-center gap-3 p-4 rounded-xl border border-slate-100 bg-white hover:border-primary-200 hover:shadow-md transition-all group">
+                            <div class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-emerald-50 group-hover:text-emerald-600 transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <span class="text-sm font-medium text-slate-700">Grading</span>
+                        </button>
+                        <button onclick="App.navigate('results')" class="flex flex-col items-center justify-center gap-3 p-4 rounded-xl border border-slate-100 bg-white hover:border-primary-200 hover:shadow-md transition-all group">
+                            <div class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                            </div>
+                            <span class="text-sm font-medium text-slate-700">Results</span>
                         </button>
                     </div>
                 </div>
@@ -431,6 +458,78 @@ const App = {
                 document.body.appendChild(script);
             }
         }, 800);
+    },
+
+    renderProctoring() {
+        this.container.innerHTML = `
+            <div class="flex items-center gap-4 mb-8">
+                <button onclick="App.navigate('dashboard')" class="p-2 rounded-lg hover:bg-slate-200 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                </button>
+                <h1 class="text-3xl font-bold text-slate-800">Live Proctoring</h1>
+            </div>
+            <div class="flex justify-center items-center h-64 glass-panel rounded-2xl">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+            </div>
+        `;
+        setTimeout(() => {
+            if(window.ProctoringModule) {
+                window.ProctoringModule.render();
+            } else {
+                const script = document.createElement('script');
+                script.src = 'js/proctoring.js';
+                script.onload = () => window.ProctoringModule.render();
+                document.body.appendChild(script);
+            }
+        }, 500);
+    },
+
+    renderGrading() {
+        this.container.innerHTML = `
+            <div class="flex items-center gap-4 mb-8">
+                <button onclick="App.navigate('dashboard')" class="p-2 rounded-lg hover:bg-slate-200 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                </button>
+                <h1 class="text-3xl font-bold text-slate-800">Manual Grading</h1>
+            </div>
+            <div class="flex justify-center items-center h-64 glass-panel rounded-2xl">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+            </div>
+        `;
+        setTimeout(() => {
+            if(window.GradingModule) {
+                window.GradingModule.render();
+            } else {
+                const script = document.createElement('script');
+                script.src = 'js/grading.js';
+                script.onload = () => window.GradingModule.render();
+                document.body.appendChild(script);
+            }
+        }, 500);
+    },
+
+    renderResults() {
+        this.container.innerHTML = `
+            <div class="flex items-center gap-4 mb-8">
+                <button onclick="App.navigate('dashboard')" class="p-2 rounded-lg hover:bg-slate-200 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                </button>
+                <h1 class="text-3xl font-bold text-slate-800">Results & Statistics</h1>
+            </div>
+            <div class="flex justify-center items-center h-64 glass-panel rounded-2xl">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+            </div>
+        `;
+        setTimeout(() => {
+            if(window.ResultsModule) {
+                window.ResultsModule.render();
+            } else {
+                const script = document.createElement('script');
+                script.src = 'js/results.js';
+                script.onload = () => window.ResultsModule.render();
+                document.body.appendChild(script);
+            }
+        }, 500);
     }
 };
 
