@@ -24,7 +24,7 @@ window.AntiCheat = {
         document.addEventListener('contextmenu', e => {
             if (this.isActive) e.preventDefault();
         });
-
+ 
         // 3. Prevent Copy, Paste, Cut
         document.addEventListener('copy', e => { if (this.isActive) e.preventDefault(); });
         document.addEventListener('paste', e => { if (this.isActive) e.preventDefault(); });
