@@ -1,4 +1,4 @@
-/**
+/** 
  * Module 8: Live Proctoring
  */ 
 window.ProctoringModule = {
