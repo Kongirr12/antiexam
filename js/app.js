@@ -1,12 +1,12 @@
 /**
  * ExamGuard - Main Application Logic (Routing & State)
- */
+ */ 
 const App = {
     state: {
         currentUser: null,
         currentRoute: 'login'
     },
-
+ 
     init() {
         this.container = document.getElementById('app-container');
         this.navActions = document.getElementById('nav-actions');
