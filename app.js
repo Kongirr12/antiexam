@@ -82,6 +82,12 @@ const App = {
             case 'exams':
                 this.renderExamManagement();
                 break;
+            case 'images':
+                this.renderImageLibrary();
+                break;
+            case 'questions':
+                this.renderQuestionBank();
+                break;
             default:
                 this.container.innerHTML = `<h2 class="text-2xl font-bold text-center mt-20">404 - Not Found</h2>`;
         }
@@ -222,7 +228,7 @@ const App = {
                 <!-- Quick Actions -->
                 <div class="glass-panel rounded-2xl p-6">
                     <h3 class="text-lg font-bold text-slate-800 mb-4">Quick Actions</h3>
-                    <div class="grid grid-cols-2 gap-4">
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
                         <button onclick="App.navigate('users')" class="flex flex-col items-center justify-center gap-3 p-4 rounded-xl border border-slate-100 bg-white hover:border-primary-200 hover:shadow-md transition-all group">
                             <div class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-primary-50 group-hover:text-primary-600 transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
@@ -234,6 +240,18 @@ const App = {
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                             </div>
                             <span class="text-sm font-medium text-slate-700">Create Exam</span>
+                        </button>
+                        <button onclick="App.navigate('questions')" class="flex flex-col items-center justify-center gap-3 p-4 rounded-xl border border-slate-100 bg-white hover:border-primary-200 hover:shadow-md transition-all group">
+                            <div class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-primary-50 group-hover:text-primary-600 transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                            </div>
+                            <span class="text-sm font-medium text-slate-700">Questions</span>
+                        </button>
+                        <button onclick="App.navigate('images')" class="flex flex-col items-center justify-center gap-3 p-4 rounded-xl border border-slate-100 bg-white hover:border-primary-200 hover:shadow-md transition-all group">
+                            <div class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-primary-50 group-hover:text-primary-600 transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                            </div>
+                            <span class="text-sm font-medium text-slate-700">Images</span>
                         </button>
                     </div>
                 </div>
@@ -310,6 +328,54 @@ const App = {
                 const script = document.createElement('script');
                 script.src = 'js/exams.js';
                 script.onload = () => window.ExamsModule.render();
+                document.body.appendChild(script);
+            }
+        }, 500);
+    },
+
+    renderImageLibrary() {
+        this.container.innerHTML = `
+            <div class="flex items-center gap-4 mb-8">
+                <button onclick="App.navigate('dashboard')" class="p-2 rounded-lg hover:bg-slate-200 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                </button>
+                <h1 class="text-3xl font-bold text-slate-800">Image Library</h1>
+            </div>
+            <div class="flex justify-center items-center h-64 glass-panel rounded-2xl">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+            </div>
+        `;
+        setTimeout(() => {
+            if(window.ImagesModule) {
+                window.ImagesModule.render();
+            } else {
+                const script = document.createElement('script');
+                script.src = 'js/images.js';
+                script.onload = () => window.ImagesModule.render();
+                document.body.appendChild(script);
+            }
+        }, 500);
+    },
+
+    renderQuestionBank() {
+        this.container.innerHTML = `
+            <div class="flex items-center gap-4 mb-8">
+                <button onclick="App.navigate('dashboard')" class="p-2 rounded-lg hover:bg-slate-200 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                </button>
+                <h1 class="text-3xl font-bold text-slate-800">Question Bank</h1>
+            </div>
+            <div class="flex justify-center items-center h-64 glass-panel rounded-2xl">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+            </div>
+        `;
+        setTimeout(() => {
+            if(window.QuestionsModule) {
+                window.QuestionsModule.render();
+            } else {
+                const script = document.createElement('script');
+                script.src = 'js/questions.js';
+                script.onload = () => window.QuestionsModule.render();
                 document.body.appendChild(script);
             }
         }, 500);
