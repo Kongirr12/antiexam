@@ -45,10 +45,17 @@ const API = {
             setTimeout(() => {
                 switch(action) {
                     case 'login':
-                        resolve({
-                            user: { id: 'U01', name: 'Admin User', role: 'Admin' },
-                            token: 'mock-token-123'
-                        });
+                        if (payload.id && payload.id.toLowerCase().includes('student')) {
+                            resolve({
+                                user: { id: 'S01', name: 'John Student', role: 'Student' },
+                                token: 'mock-token-stu'
+                            });
+                        } else {
+                            resolve({
+                                user: { id: 'U01', name: 'Admin User', role: 'Admin' },
+                                token: 'mock-token-123'
+                            });
+                        }
                         break;
                     case 'getUsers':
                         resolve([

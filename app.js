@@ -88,6 +88,9 @@ const App = {
             case 'questions':
                 this.renderQuestionBank();
                 break;
+            case 'take_exam':
+                this.renderTakeExam(data);
+                break;
             default:
                 this.container.innerHTML = `<h2 class="text-2xl font-bold text-center mt-20">404 - Not Found</h2>`;
         }
@@ -379,6 +382,55 @@ const App = {
                 document.body.appendChild(script);
             }
         }, 500);
+    },
+
+    renderStudentDashboard() {
+        this.container.innerHTML = `
+            <div class="flex items-center gap-4 mb-8">
+                <h1 class="text-3xl font-bold text-slate-800">Student Dashboard</h1>
+            </div>
+            <div class="flex justify-center items-center h-64 glass-panel rounded-2xl">
+                <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
+            </div>
+        `;
+        setTimeout(() => {
+            if(window.StudentModule) {
+                window.StudentModule.render();
+            } else {
+                const script = document.createElement('script');
+                script.src = 'js/student.js';
+                script.onload = () => window.StudentModule.render();
+                document.body.appendChild(script);
+            }
+        }, 500);
+    },
+
+    renderTakeExam(examData) {
+        this.container.innerHTML = `
+            <div class="flex justify-center items-center h-screen fixed inset-0 z-50 bg-slate-50">
+                <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600"></div>
+                <span class="ml-4 font-bold text-slate-700">Initializing Secure Exam Environment...</span>
+            </div>
+        `;
+        
+        // Hide navbar during exam
+        document.getElementById('navbar').style.display = 'none';
+
+        setTimeout(() => {
+            if(window.ExamRunner) {
+                window.ExamRunner.start(examData);
+            } else {
+                // Load anticheat engine first, then exam runner
+                const acScript = document.createElement('script');
+                acScript.src = 'js/anticheat.js';
+                document.head.appendChild(acScript);
+                
+                const script = document.createElement('script');
+                script.src = 'js/exam_runner.js';
+                script.onload = () => window.ExamRunner.start(examData);
+                document.body.appendChild(script);
+            }
+        }, 800);
     }
 };
 
