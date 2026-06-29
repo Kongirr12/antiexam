@@ -1,6 +1,6 @@
 /**
  * Module 8: Live Proctoring
- */
+ */ 
 window.ProctoringModule = {
     state: {
         sessions: [],
