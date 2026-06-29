@@ -58,8 +58,21 @@ const API = {
                         break;
                     case 'getExams':
                         resolve([
-                            { id: 'E01', name: 'Midterm Math', subject: 'Mathematics', status: 'Upcoming', duration: 60, passing: 50 },
-                            { id: 'E02', name: 'Physics Quiz', subject: 'Science', status: 'Active', duration: 30, passing: 60 }
+                            { id: 'E01', name: 'Midterm Math', subject: 'Mathematics', status: 'Active', duration: 60, passing: 50 },
+                            { id: 'E02', name: 'Physics Quiz', subject: 'Science', status: 'Draft', duration: 30, passing: 60 }
+                        ]);
+                        break;
+                    case 'getImages':
+                        resolve([
+                            { id: 'IMG01', name: 'diagram_cell.png', url: 'https://via.placeholder.com/150/e0f2fe/0369a1?text=Cell+Diagram', date: '2023-10-01' },
+                            { id: 'IMG02', name: 'math_graph.jpg', url: 'https://via.placeholder.com/150/f3e8ff/7e22ce?text=Math+Graph', date: '2023-10-05' }
+                        ]);
+                        break;
+                    case 'getQuestions':
+                        resolve([
+                            { id: 'Q01', type: 'SingleChoice', content: 'What is the powerhouse of the cell?', score: 1 },
+                            { id: 'Q02', type: 'MultipleChoice', content: 'Select all prime numbers:', score: 2 },
+                            { id: 'Q03', type: 'Essay', content: 'Explain the theory of relativity $E=mc^2$.', score: 10 }
                         ]);
                         break;
                     default:
