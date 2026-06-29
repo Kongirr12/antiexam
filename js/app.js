@@ -111,7 +111,7 @@ const App = {
     renderLogin() {
         this.container.innerHTML = `
             <div class="flex min-h-[80vh] items-center justify-center">
-                <div class="glass-panel w-full max-w-md rounded-2xl p-8 shadow-2xl relative overflow-hidden">
+                <div class="glass-panel w-full max-w-lg rounded-2xl p-8 shadow-2xl relative overflow-hidden">
                     
                     <!-- Decorative background element -->
                     <div class="absolute -top-24 -right-24 w-48 h-48 bg-primary-400 rounded-full mix-blend-multiply filter blur-3xl opacity-20"></div>
