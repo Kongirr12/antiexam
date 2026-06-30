@@ -9,24 +9,24 @@ window.UsersModule = {
 
     async render() {
         App.container.innerHTML = `
-            <div class="flex items-center justify-between mb-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
                 <div class="flex items-center gap-4">
                     <button onclick="App.navigate('dashboard')" class="p-2 rounded-lg hover:bg-slate-200 transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                     </button>
                     <div>
-                        <h1 class="text-3xl font-bold text-slate-800 tracking-tight">User Management</h1>
-                        <p class="text-slate-500 text-sm">Manage students, teachers, and admins.</p>
+                        <h1 class="text-3xl font-bold text-slate-800 tracking-tight">จัดการผู้ใช้งาน (User Management)</h1>
+                        <p class="text-slate-500 text-sm">จัดการข้อมูลนักเรียน ครู และผู้ดูแลระบบ</p>
                     </div>
                 </div>
-                <div class="flex gap-3">
+                <div class="flex flex-wrap gap-3">
                     <button class="premium-btn-outline gap-2" onclick="UsersModule.importCSV()">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                        Import CSV
+                        นำเข้า CSV
                     </button>
                     <button class="premium-btn gap-2" onclick="UsersModule.showAddModal()">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                        Add User
+                        เพิ่มผู้ใช้งาน
                     </button>
                 </div>
             </div>
@@ -35,18 +35,18 @@ window.UsersModule = {
             <div class="glass-panel p-4 rounded-xl flex flex-col sm:flex-row gap-4 mb-6">
                 <div class="relative flex-grow">
                     <svg class="w-5 h-5 absolute left-3 top-2.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    <input type="text" placeholder="Search by name, ID, or email..." class="premium-input pl-10" id="searchUser">
+                    <input type="text" placeholder="ค้นหาด้วยชื่อ, รหัส, หรืออีเมล..." class="premium-input !pl-10" id="searchUser">
                 </div>
                 <select class="premium-input sm:w-48">
-                    <option value="">All Roles</option>
-                    <option value="Student">Students</option>
-                    <option value="Teacher">Teachers</option>
-                    <option value="Admin">Admins</option>
+                    <option value="">ทุกบทบาท</option>
+                    <option value="Student">นักเรียน (Student)</option>
+                    <option value="Teacher">ครู (Teacher)</option>
+                    <option value="Admin">ผู้ดูแลระบบ (Admin)</option>
                 </select>
                 <select class="premium-input sm:w-48">
-                    <option value="">All Status</option>
-                    <option value="Active">Active</option>
-                    <option value="Disabled">Disabled</option>
+                    <option value="">ทุกสถานะ</option>
+                    <option value="Active">เปิดใช้งาน (Active)</option>
+                    <option value="Disabled">ปิดการใช้งาน (Disabled)</option>
                 </select>
             </div>
 
