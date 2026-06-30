@@ -24,7 +24,7 @@ window.ExamRunner = {
             window.AntiCheat.init(3);
         }
     },
- 
+
     renderLayout() {
         // Clear main container styling to take full screen
         App.container.className = 'w-full h-screen fixed inset-0 z-40 bg-slate-50 flex flex-col overflow-hidden';
@@ -34,11 +34,11 @@ window.ExamRunner = {
             <header class="bg-white border-b border-slate-200 h-16 flex items-center justify-between px-6 shrink-0 z-10 shadow-sm">
                 <div>
                     <h1 class="text-lg font-bold text-slate-800">${this.exam.name}</h1>
-                    <p class="text-xs text-slate-500">${this.exam.subject} | ID: ${this.exam.id}</p>
+                    <p class="text-xs text-slate-500">${this.exam.subject} | รหัส: ${this.exam.id}</p>
                 </div>
                 <div class="flex items-center gap-6">
                     <div class="text-center">
-                        <span class="text-[10px] uppercase font-bold tracking-widest text-slate-400 block mb-0.5">Time Remaining</span>
+                        <span class="text-[10px] uppercase font-bold tracking-widest text-slate-400 block mb-0.5">เวลาที่เหลือ (Time)</span>
                         <div id="exam-timer" class="text-2xl font-mono font-bold text-slate-800 tabular-nums leading-none">
                             00:00:00
                         </div>
