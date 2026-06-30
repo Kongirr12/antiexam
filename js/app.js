@@ -1,6 +1,6 @@
 /**
  * ExamGuard - Main Application Logic (Routing & State)
- */ 
+ */
 const App = {
     state: {
         currentUser: null,
