@@ -9,21 +9,23 @@ window.ImagesModule = {
 
     async render() {
         App.container.innerHTML = `
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
                 <div class="flex items-center gap-4">
                     <button onclick="App.navigate('dashboard')" class="p-2 rounded-lg hover:bg-slate-200 transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                     </button>
                     <div>
-                        <h1 class="text-3xl font-bold text-slate-800 tracking-tight">Image Library</h1>
-                        <p class="text-slate-500 text-sm">Upload and manage images for your questions.</p>
+                        <h1 class="text-3xl font-bold text-slate-800 tracking-tight">คลังรูปภาพ (Image Library)</h1>
+                        <p class="text-slate-500 text-sm">อัปโหลดและจัดการรูปภาพสำหรับข้อสอบ</p>
                     </div>
                 </div>
-                <button class="premium-btn gap-2" onclick="document.getElementById('file-upload').click()">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                    Upload Image
-                    <input type="file" id="file-upload" class="hidden" accept="image/*" onchange="ImagesModule.handleUpload(event)">
-                </button>
+                <div class="flex flex-wrap gap-3">
+                    <button class="premium-btn gap-2" onclick="document.getElementById('file-upload').click()">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                        อัปโหลดรูปภาพ
+                        <input type="file" id="file-upload" class="hidden" accept="image/*" onchange="ImagesModule.handleUpload(event)">
+                    </button>
+                </div>
             </div>
 
             <!-- Upload Progress (Hidden by default) -->
