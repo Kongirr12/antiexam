@@ -125,7 +125,7 @@ window.QuestionsModule = {
                     <button class="text-slate-400 hover:text-primary-600 p-2 rounded-lg hover:bg-primary-50 transition-colors" title="Edit">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                     </button>
-                    <button class="text-slate-400 hover:text-danger-600 p-2 rounded-lg hover:bg-danger-50 transition-colors" title="Delete">
+                    <button class="text-slate-400 hover:text-danger-600 p-2 rounded-lg hover:bg-danger-50 transition-colors" title="Delete" onclick="QuestionsModule.deleteQuestion('${q.id}')">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                     </button>
                 </div>
@@ -162,7 +162,14 @@ window.QuestionsModule = {
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-slate-700 mb-2">Question Content (Supports LaTeX like $E=mc^2$)</label>
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="block text-sm font-medium text-slate-700">Question Content (Supports LaTeX like $E=mc^2$)</label>
+                            <label class="cursor-pointer text-xs font-bold text-primary-600 hover:text-primary-700 flex items-center gap-1">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                Insert Image
+                                <input type="file" accept="image/*" class="hidden" onchange="QuestionsModule.handleImageUpload(event, 'qContent')">
+                            </label>
+                        </div>
                         <textarea id="qContent" class="premium-input min-h-[120px]" placeholder="Type your question here..." required></textarea>
                     </div>
 
@@ -345,5 +352,52 @@ window.QuestionsModule = {
         const level = document.getElementById('ai-level').value;
         const prompt = `Act as an expert educator. Create 5 multiple-choice questions about "${topic}" aimed at the "${level}" level of Bloom's Taxonomy. Format the output clearly with the question, 4 options (A,B,C,D), and specify the correct answer with a brief explanation.`;
         document.getElementById('ai-output').value = prompt;
+    },
+
+    async deleteQuestion(id) {
+        if (!confirm("Are you sure you want to delete this question?")) return;
+        try {
+            await API.post('deleteQuestion', { id });
+            this.render(); // Reload list
+        } catch(e) {
+            alert('Failed to delete question: ' + e.message);
+        }
+    },
+
+    handleImageUpload(event, targetId) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const MAX_WIDTH = 600;
+                let width = img.width;
+                let height = img.height;
+                
+                if (width > MAX_WIDTH) {
+                    height *= MAX_WIDTH / width;
+                    width = MAX_WIDTH;
+                }
+                
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                // Compress to JPEG with 70% quality to keep size small
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                
+                // Insert into textarea
+                const textarea = document.getElementById(targetId);
+                const imageMarkdown = `\n<img src="${dataUrl}" class="max-w-full rounded-lg mt-3 border border-slate-200">\n`;
+                textarea.value = textarea.value + imageMarkdown;
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+        event.target.value = ''; // Reset input
     }
 };
