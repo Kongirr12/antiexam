@@ -19,16 +19,32 @@ window.QuestionsModule = {
                         <h1 class="text-3xl font-bold text-slate-800 tracking-tight">Question Bank</h1>
                         <p class="text-slate-500 text-sm">Create and manage questions with LaTeX & images.</p>
                     </div>
-                </div>
-                <div class="flex flex-wrap gap-3">
-                    <button class="premium-btn-outline gap-2" onclick="QuestionsModule.showAIPrompt()">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                        AI Prompt Gen
-                    </button>
-                    <button class="premium-btn gap-2" onclick="QuestionsModule.showCreateQuestion()">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                        Add Question
-                    </button>
+            <div class="flex items-center gap-4 mb-8">
+                <button onclick="App.navigate('dashboard')" class="p-2 rounded-lg hover:bg-slate-200 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                </button>
+                <h1 class="text-3xl font-bold text-slate-800 tracking-tight">คลังข้อสอบ (Question Bank)</h1>
+            </div>
+
+            <div class="glass-panel p-6 rounded-2xl mb-8">
+                <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
+                    <div class="relative w-full md:w-96 text-slate-400 focus-within:text-primary-600 transition-colors">
+                        <svg class="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                        <input type="text" placeholder="ค้นหาข้อสอบ..." class="premium-input pl-12" id="searchQ">
+                    </div>
+                    <div class="flex gap-3 w-full md:w-auto">
+                        <select class="premium-input bg-white w-full md:w-auto" id="filterType">
+                            <option value="">ทุกประเภท</option>
+                            <option value="Multiple Choice">ปรนัย (Multiple Choice)</option>
+                            <option value="True/False">ถูก/ผิด (True/False)</option>
+                            <option value="Matching">จับคู่ (Matching)</option>
+                            <option value="Essay">อัตนัย (Essay)</option>
+                        </select>
+                        <button onclick="QuestionsModule.showCreateQuestion()" class="premium-btn whitespace-nowrap">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                            สร้างข้อสอบใหม่
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -142,7 +158,7 @@ window.QuestionsModule = {
                 <button onclick="QuestionsModule.render()" class="p-2 rounded-lg hover:bg-slate-200 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                 </button>
-                <h1 class="text-3xl font-bold text-slate-800">${existingData ? 'Edit Question' : 'Create New Question'}</h1>
+                <h1 class="text-3xl font-bold text-slate-800">${existingData ? 'แก้ไขข้อสอบ (Edit Question)' : 'สร้างข้อสอบใหม่ (Create Question)'}</h1>
             </div>
 
             <div class="max-w-4xl mx-auto glass-panel p-6 sm:p-8 rounded-2xl">
@@ -150,30 +166,30 @@ window.QuestionsModule = {
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">Question Type</label>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">ประเภทคำถาม (Question Type)</label>
                             <select id="qType" class="premium-input" onchange="QuestionsModule.toggleTypeFields()" required>
-                                <option value="Multiple Choice">Multiple Choice</option>
-                                <option value="True/False">True/False</option>
-                                <option value="Matching">Matching</option>
-                                <option value="Essay">Essay</option>
+                                <option value="Multiple Choice">ปรนัย (Multiple Choice)</option>
+                                <option value="True/False">ถูก/ผิด (True/False)</option>
+                                <option value="Matching">จับคู่ (Matching)</option>
+                                <option value="Essay">อัตนัย (Essay)</option>
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-2">Points / Score</label>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">คะแนน (Points / Score)</label>
                             <input type="number" id="qScore" class="premium-input" value="${existingData ? existingData.score : 1}" min="1" step="0.5" required>
                         </div>
                     </div>
 
                     <div>
                         <div class="flex justify-between items-center mb-2">
-                            <label class="block text-sm font-medium text-slate-700">Question Content (Supports LaTeX like $E=mc^2$)</label>
+                            <label class="block text-sm font-medium text-slate-700">โจทย์คำถาม (รองรับ LaTeX เช่น $E=mc^2$)</label>
                             <label class="cursor-pointer text-xs font-bold text-primary-600 hover:text-primary-700 flex items-center gap-1">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                                Insert Image
+                                แทรกรูปภาพ (Insert Image)
                                 <input type="file" accept="image/*" class="hidden" onchange="QuestionsModule.handleImageUpload(event, 'qContent')">
                             </label>
                         </div>
-                        <textarea id="qContent" class="premium-input min-h-[120px]" placeholder="Type your question here..." required></textarea>
+                        <textarea id="qContent" class="premium-input min-h-[120px]" placeholder="พิมพ์คำถามของคุณที่นี่..." required></textarea>
                     </div>
 
                     <!-- Dynamic Fields Container -->
@@ -182,8 +198,8 @@ window.QuestionsModule = {
                     </div>
 
                     <div class="pt-4 border-t border-slate-100 flex justify-end gap-3">
-                        <button type="button" class="premium-btn-outline" onclick="QuestionsModule.render()">Cancel</button>
-                        <button type="submit" class="premium-btn px-8" id="saveQuestionBtn">${existingData ? 'Update Question' : 'Save Question'}</button>
+                        <button type="button" class="premium-btn-outline" onclick="QuestionsModule.render()">ยกเลิก (Cancel)</button>
+                        <button type="submit" class="premium-btn px-8" id="saveQuestionBtn">${existingData ? 'อัปเดตคำถาม (Update)' : 'บันทึกคำถาม (Save)'}</button>
                     </div>
                 </form>
             </div>
@@ -212,42 +228,42 @@ window.QuestionsModule = {
 
         if (type === 'Multiple Choice') {
             html = `
-                <h4 class="font-bold text-slate-800 mb-4 text-sm">Options & Answer</h4>
+                <h4 class="font-bold text-slate-800 mb-4 text-sm">ตัวเลือกและคำตอบ (Options & Answer)</h4>
                 <div class="space-y-3">
                     <div class="flex items-center gap-3">
                         <input type="radio" name="mcqCorrect" value="A" class="w-4 h-4 text-primary-600 focus:ring-primary-500" required>
                         <span class="font-bold text-slate-500 w-6">A.</span>
-                        <input type="text" class="premium-input flex-grow mcq-option" placeholder="Option A" required>
+                        <input type="text" class="premium-input flex-grow mcq-option" placeholder="ตัวเลือก A" required>
                     </div>
                     <div class="flex items-center gap-3">
                         <input type="radio" name="mcqCorrect" value="B" class="w-4 h-4 text-primary-600 focus:ring-primary-500">
                         <span class="font-bold text-slate-500 w-6">B.</span>
-                        <input type="text" class="premium-input flex-grow mcq-option" placeholder="Option B" required>
+                        <input type="text" class="premium-input flex-grow mcq-option" placeholder="ตัวเลือก B" required>
                     </div>
                     <div class="flex items-center gap-3">
                         <input type="radio" name="mcqCorrect" value="C" class="w-4 h-4 text-primary-600 focus:ring-primary-500">
                         <span class="font-bold text-slate-500 w-6">C.</span>
-                        <input type="text" class="premium-input flex-grow mcq-option" placeholder="Option C" required>
+                        <input type="text" class="premium-input flex-grow mcq-option" placeholder="ตัวเลือก C" required>
                     </div>
                     <div class="flex items-center gap-3">
                         <input type="radio" name="mcqCorrect" value="D" class="w-4 h-4 text-primary-600 focus:ring-primary-500">
                         <span class="font-bold text-slate-500 w-6">D.</span>
-                        <input type="text" class="premium-input flex-grow mcq-option" placeholder="Option D" required>
+                        <input type="text" class="premium-input flex-grow mcq-option" placeholder="ตัวเลือก D" required>
                     </div>
                 </div>
             `;
         } 
         else if (type === 'True/False') {
             html = `
-                <h4 class="font-bold text-slate-800 mb-4 text-sm">Correct Answer</h4>
+                <h4 class="font-bold text-slate-800 mb-4 text-sm">คำตอบที่ถูกต้อง (Correct Answer)</h4>
                 <div class="flex gap-6">
                     <label class="flex items-center gap-2 cursor-pointer p-4 glass-panel rounded-xl flex-1 hover:border-primary-300">
                         <input type="radio" name="tfCorrect" value="True" class="w-5 h-5 text-primary-600 focus:ring-primary-500" required>
-                        <span class="font-bold text-slate-700">True</span>
+                        <span class="font-bold text-slate-700">ถูก (True)</span>
                     </label>
                     <label class="flex items-center gap-2 cursor-pointer p-4 glass-panel rounded-xl flex-1 hover:border-primary-300">
                         <input type="radio" name="tfCorrect" value="False" class="w-5 h-5 text-primary-600 focus:ring-primary-500">
-                        <span class="font-bold text-slate-700">False</span>
+                        <span class="font-bold text-slate-700">ผิด (False)</span>
                     </label>
                 </div>
             `;
@@ -255,20 +271,12 @@ window.QuestionsModule = {
         else if (type === 'Matching') {
             html = `
                 <div class="flex justify-between items-center mb-4">
-                    <h4 class="font-bold text-slate-800 text-sm">Matching Pairs</h4>
-                    <button type="button" class="text-xs text-primary-600 hover:text-primary-700 font-bold" onclick="QuestionsModule.addMatchingPair()">+ Add Pair</button>
+                    <h4 class="font-bold text-slate-800 text-sm">จับคู่ (Matching Pairs)</h4>
+                    <button type="button" class="text-xs text-primary-600 hover:text-primary-700 font-bold" onclick="QuestionsModule.addMatchingPair()">+ เพิ่มคู่</button>
                 </div>
-                <p class="text-xs text-slate-500 mb-4">Enter the correct matching pairs. They will be shuffled automatically during the exam.</p>
+                <p class="text-xs text-slate-500 mb-4">ใส่ข้อมูลให้ตรงคู่กัน ระบบจะสลับข้อให้อัตโนมัติเวลาสอบจริง</p>
                 <div id="matchingPairsContainer" class="space-y-3">
                     <div class="flex items-center gap-3 matching-pair">
-                        <input type="text" class="premium-input flex-1 match-left" placeholder="Item A" required>
-                        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
-                        <input type="text" class="premium-input flex-1 match-right" placeholder="Matches with A" required>
-                        <button type="button" class="text-danger-400 hover:text-danger-600 p-2" onclick="this.parentElement.remove()"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
-                    </div>
-                    <div class="flex items-center gap-3 matching-pair">
-                        <input type="text" class="premium-input flex-1 match-left" placeholder="Item B" required>
-                        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
                         <input type="text" class="premium-input flex-1 match-right" placeholder="Matches with B" required>
                         <button type="button" class="text-danger-400 hover:text-danger-600 p-2" onclick="this.parentElement.remove()"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
                     </div>
@@ -326,9 +334,9 @@ window.QuestionsModule = {
         const div = document.createElement('div');
         div.className = 'flex items-center gap-3 matching-pair';
         div.innerHTML = `
-            <input type="text" class="premium-input flex-1 match-left" placeholder="Item" required>
+            <input type="text" class="premium-input flex-1 match-left" placeholder="โจทย์" required>
             <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
-            <input type="text" class="premium-input flex-1 match-right" placeholder="Matches with" required>
+            <input type="text" class="premium-input flex-1 match-right" placeholder="คู่กับ" required>
             <button type="button" class="text-danger-400 hover:text-danger-600 p-2" onclick="this.parentElement.remove()"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
         `;
         div.querySelector('.match-left').value = leftStr;
@@ -389,8 +397,8 @@ window.QuestionsModule = {
             }
             this.render(); // Go back to list
         } catch (error) {
-            alert('Failed to save question: ' + error.message);
-            btn.innerHTML = this.state.editingId ? `Update Question` : `Save Question`;
+            alert('บันทึกข้อมูลไม่สำเร็จ: ' + error.message);
+            btn.innerHTML = this.state.editingId ? `อัปเดตคำถาม (Update)` : `บันทึกคำถาม (Save)`;
             btn.disabled = false;
         }
     },
@@ -414,12 +422,12 @@ window.QuestionsModule = {
     },
 
     async deleteQuestion(id) {
-        if (!confirm("Are you sure you want to delete this question?")) return;
+        if (!confirm("คุณแน่ใจหรือไม่ว่าต้องการลบคำถามนี้?")) return;
         try {
             await API.post('deleteQuestion', { id });
             this.render(); // Reload list
         } catch(e) {
-            alert('Failed to delete question: ' + e.message);
+            alert('ลบคำถามไม่สำเร็จ: ' + e.message);
         }
     },
 
