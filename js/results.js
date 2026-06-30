@@ -1,133 +1,213 @@
 /**
- * Module 8: Live Proctoring
+ * Module 10 & 11: Results, Statistics & Export
  */
-window.ProctoringModule = {
+window.ResultsModule = {
     state: {
-        sessions: [],
-        isLoading: true,
-        interval: null
+        stats: null,
+        isLoading: true
     },
 
     async render() {
         App.container.innerHTML = `
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                 <div class="flex items-center gap-4">
                     <button onclick="App.navigate('dashboard')" class="p-2 rounded-lg hover:bg-slate-200 transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                     </button>
                     <div>
-                        <h1 class="text-3xl font-bold text-slate-800 tracking-tight">คุมสอบสด (Live Proctoring)</h1>
-                        <p class="text-slate-500 text-sm">ตรวจสอบสถานะการสอบและพฤติกรรมทุจริตแบบเรียลไทม์</p>
+                        <h1 class="text-3xl font-bold text-slate-800 tracking-tight">ผลสอบและสถิติ (Results & Statistics)</h1>
+                        <p class="text-slate-500 text-sm">วิเคราะห์ผลคะแนนและส่งออกรายงาน</p>
                     </div>
                 </div>
-                <div class="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-full text-sm font-bold border border-emerald-200">
-                    <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                    กำลังอัปเดตสถานะสด (Live)
-                </div>
-            </div>
-
-            <!-- Toolbar -->
-            <div class="glass-panel p-4 rounded-xl flex flex-col md:flex-row gap-4 mb-6">
-                <select class="premium-input w-full md:w-64" id="proc-exam-select">
-                    <option value="">ทุกชุดข้อสอบที่กำลังสอบ</option>
-                    <option value="E01">กลางภาค คณิตศาสตร์</option>
-                </select>
-                <div class="relative flex-grow">
-                    <svg class="w-5 h-5 absolute left-3 top-2.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    <input type="text" placeholder="ค้นหาชื่อนักเรียน หรือ รหัสประจำตัว..." class="premium-input !pl-10">
+                <div class="flex flex-wrap gap-3">
+                    <button class="premium-btn-outline gap-2" onclick="ResultsModule.exportData('csv')">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                        ส่งออก CSV
+                    </button>
+                    <button class="premium-btn gap-2 bg-indigo-600 hover:bg-indigo-700" onclick="ResultsModule.exportData('pdf')">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
+                        สร้าง PDF
+                    </button>
                 </div>
             </div>
 
             <!-- Loader -->
-            <div id="proctor-loader" class="flex justify-center items-center py-12">
+            <div id="results-loader" class="flex justify-center items-center py-12">
                 <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div>
             </div>
 
-            <!-- Grid -->
-            <div id="proctor-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 hidden">
-                <!-- Session Cards injected here -->
+            <div id="results-content" class="hidden space-y-6">
+                
+                <!-- Filters -->
+                <div class="glass-panel p-4 rounded-xl flex gap-4">
+                    <select class="premium-input w-full md:w-64" id="res-exam-select" onchange="ResultsModule.updateDashboard()">
+                        <option value="E01">Midterm Math</option>
+                        <option value="E02">Physics Quiz</option>
+                    </select>
+                </div>
+
+                <!-- Score Overview Cards -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4" id="stats-overview">
+                    <!-- Injected -->
+                </div>
+
+                <!-- Charts Area -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="glass-panel p-6 rounded-2xl">
+                        <h3 class="text-lg font-bold text-slate-800 mb-4">Score Distribution</h3>
+                        <div class="relative h-64 w-full">
+                            <canvas id="distChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="glass-panel p-6 rounded-2xl">
+                        <h3 class="text-lg font-bold text-slate-800 mb-4">Item Analysis (Difficulty)</h3>
+                        <div class="relative h-64 w-full">
+                            <canvas id="itemChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Student List -->
+                <div class="glass-panel p-6 rounded-2xl">
+                    <h3 class="text-lg font-bold text-slate-800 mb-4">Individual Results</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-sm text-slate-600">
+                            <thead class="text-xs uppercase bg-slate-50 text-slate-500 font-bold border-b border-slate-200">
+                                <tr>
+                                    <th class="px-4 py-3 rounded-tl-lg">Student ID</th>
+                                    <th class="px-4 py-3">Name</th>
+                                    <th class="px-4 py-3">Score</th>
+                                    <th class="px-4 py-3">Status</th>
+                                    <th class="px-4 py-3 rounded-tr-lg">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="student-results-list" class="divide-y divide-slate-100">
+                                <!-- Injected -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         `;
 
-        await this.loadSessions();
-        
-        // Polling simulation
-        this.state.interval = setInterval(() => {
-            if (App.state.currentRoute === 'proctoring') {
-                this.loadSessions(true); // silent reload
-            } else {
-                clearInterval(this.state.interval);
-            }
-        }, 5000);
+        await this.loadStats();
     },
 
-    async loadSessions(silent = false) {
+    async loadStats() {
         try {
-            this.state.sessions = await API.post('getLiveSessions');
-            if (!silent) {
-                document.getElementById('proctor-loader').classList.add('hidden');
-                document.getElementById('proctor-grid').classList.remove('hidden');
-            }
-            this.renderGrid(document.getElementById('proctor-grid'));
-        } catch (error) {
-            console.error("Failed to load sessions", error);
+            // Simulated fetch
+            this.state.stats = {
+                overview: { avg: 72, max: 98, min: 45, passRate: 85 },
+                distribution: [5, 12, 25, 40, 18], // Grades F, D, C, B, A
+                itemDifficulty: [80, 45, 90, 30, 60], // Pass rate per question
+                students: [
+                    { id: 'S01', name: 'John Student', score: 88, max: 100, status: 'Passed' },
+                    { id: 'S02', name: 'Alice Smith', score: 45, max: 100, status: 'Failed' },
+                    { id: 'S03', name: 'Bob Jones', score: 95, max: 100, status: 'Passed' }
+                ]
+            };
+
+            document.getElementById('results-loader').classList.add('hidden');
+            document.getElementById('results-content').classList.remove('hidden');
+
+            this.renderOverview();
+            this.renderCharts();
+            this.renderStudentList();
+        } catch (e) {
+            console.error(e);
         }
     },
 
-    renderGrid(gridElement) {
-        if (!gridElement) return;
+    renderOverview() {
+        const data = this.state.stats.overview;
+        document.getElementById('stats-overview').innerHTML = `
+            <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Average Score</p>
+                <p class="text-3xl font-bold text-slate-800">${data.avg}%</p>
+            </div>
+            <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Highest Score</p>
+                <p class="text-3xl font-bold text-emerald-600">${data.max}%</p>
+            </div>
+            <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Lowest Score</p>
+                <p class="text-3xl font-bold text-rose-600">${data.min}%</p>
+            </div>
+            <div class="bg-white p-5 rounded-xl border border-slate-100 shadow-sm">
+                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Pass Rate</p>
+                <p class="text-3xl font-bold text-primary-600">${data.passRate}%</p>
+            </div>
+        `;
+    },
 
-        if (this.state.sessions.length === 0) {
-            gridElement.innerHTML = `<div class="col-span-full text-center py-12 text-slate-500">No active sessions found.</div>`;
+    renderCharts() {
+        if (typeof Chart === 'undefined') {
+            console.warn("Chart.js not loaded.");
             return;
         }
 
-        gridElement.innerHTML = this.state.sessions.map(s => {
-            const isCritical = s.cheatCount >= 2;
-            const borderClass = isCritical ? 'border-l-4 border-l-rose-500' : 'border-l-4 border-l-primary-500';
-            
-            return `
-            <div class="glass-panel p-5 rounded-xl hover-lift ${borderClass} flex flex-col h-full relative">
-                ${s.status === 'Offline' ? '<div class="absolute inset-0 bg-white/60 backdrop-blur-[1px] z-10 flex items-center justify-center rounded-xl"><span class="bg-slate-800 text-white px-3 py-1 rounded-full text-sm font-bold opacity-80 shadow-lg">Disconnected</span></div>' : ''}
-                
-                <div class="flex justify-between items-start mb-3">
-                    <div>
-                        <h3 class="font-bold text-slate-800 leading-tight">${s.name}</h3>
-                        <p class="text-xs text-slate-500">ID: ${s.studentId}</p>
-                    </div>
-                    <div class="flex flex-col items-end">
-                        <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-bold ${s.cheatCount > 0 ? 'bg-rose-100 text-rose-700' : 'bg-slate-100 text-slate-500'}">
-                            ${s.cheatCount} Alerts
-                        </span>
-                    </div>
-                </div>
-                
-                <div class="mb-4">
-                    <div class="flex justify-between text-xs font-semibold mb-1">
-                        <span class="text-slate-500">Progress</span>
-                        <span class="${s.progress > 90 ? 'text-emerald-600' : 'text-primary-600'}">${s.progress}%</span>
-                    </div>
-                    <div class="w-full bg-slate-100 rounded-full h-2">
-                        <div class="bg-primary-500 h-2 rounded-full transition-all duration-1000" style="width: ${s.progress}%"></div>
-                    </div>
-                </div>
-                
-                <div class="mt-auto flex justify-between items-center border-t border-slate-100 pt-3 text-xs font-medium">
-                    <span class="text-slate-500 flex items-center gap-1">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        ${s.timeRemaining}
-                    </span>
-                    <button class="text-rose-600 hover:text-rose-700 font-bold hover:underline" onclick="ProctoringModule.forceSubmit('${s.studentId}')">Force Submit</button>
-                </div>
-            </div>
-        `}).join('');
+        // Distribution Chart
+        const ctxDist = document.getElementById('distChart').getContext('2d');
+        new Chart(ctxDist, {
+            type: 'bar',
+            data: {
+                labels: ['0-49 (F)', '50-59 (D)', '60-69 (C)', '70-79 (B)', '80-100 (A)'],
+                datasets: [{
+                    label: 'Number of Students',
+                    data: this.state.stats.distribution,
+                    backgroundColor: 'rgba(14, 165, 233, 0.7)',
+                    borderColor: 'rgba(14, 165, 233, 1)',
+                    borderWidth: 1,
+                    borderRadius: 4
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false }
+        });
+
+        // Item Analysis Chart
+        const ctxItem = document.getElementById('itemChart').getContext('2d');
+        new Chart(ctxItem, {
+            type: 'line',
+            data: {
+                labels: ['Q1', 'Q2', 'Q3', 'Q4', 'Q5'],
+                datasets: [{
+                    label: '% Correct (Difficulty)',
+                    data: this.state.stats.itemDifficulty,
+                    borderColor: 'rgba(16, 185, 129, 1)',
+                    backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                    borderWidth: 2,
+                    fill: true,
+                    tension: 0.3
+                }]
+            },
+            options: {
+                responsive: true, maintainAspectRatio: false,
+                scales: { y: { min: 0, max: 100 } }
+            }
+        });
     },
 
-    forceSubmit(studentId) {
-        if (confirm(\`Are you sure you want to forcibly submit the exam for student ID: \${studentId}?\`)) {
-            alert('Command sent. The student\\'s exam will be submitted immediately.');
-            // In a real app, this would send a ping to GAS, which would flag the session, 
-            // and the student's polling mechanism would catch it and auto-submit.
+    renderStudentList() {
+        document.getElementById('student-results-list').innerHTML = this.state.stats.students.map(s => `
+            <tr class="hover:bg-slate-50 transition-colors">
+                <td class="px-4 py-3 font-medium text-slate-700">${s.id}</td>
+                <td class="px-4 py-3">${s.name}</td>
+                <td class="px-4 py-3 font-bold">${s.score}/${s.max}</td>
+                <td class="px-4 py-3">
+                    <span class="px-2 py-1 rounded text-xs font-bold ${s.status === 'Passed' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">${s.status}</span>
+                </td>
+                <td class="px-4 py-3">
+                    <button class="text-primary-600 hover:underline font-medium text-sm">View Sheet</button>
+                </td>
+            </tr>
+        `).join('');
+    },
+
+    exportData(type) {
+        if (type === 'pdf') {
+            alert('Generating PDF Report... \\n(In a real app, this will trigger jsPDF or a backend PDF generator and download the file).');
+        } else {
+            alert('Downloading CSV Export... \\n(In a real app, this will convert data to CSV and trigger a file download).');
         }
     }
 };
