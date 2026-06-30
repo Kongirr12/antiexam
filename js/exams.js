@@ -6,7 +6,7 @@ window.ExamsModule = {
         exams: [],
         isLoading: true
     },
-    
+
     async render() {
         App.container.innerHTML = `
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
@@ -15,13 +15,13 @@ window.ExamsModule = {
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                     </button>
                     <div>
-                        <h1 class="text-3xl font-bold text-slate-800 tracking-tight">Exam Management</h1>
-                        <p class="text-slate-500 text-sm">Create and manage examinations.</p>
+                        <h1 class="text-3xl font-bold text-slate-800 tracking-tight">จัดการชุดข้อสอบ (Exam Management)</h1>
+                        <p class="text-slate-500 text-sm">สร้างและจัดการชุดข้อสอบ</p>
                     </div>
                 </div>
                 <button class="premium-btn gap-2" onclick="ExamsModule.showCreateExam()">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    Create New Exam
+                    สร้างชุดข้อสอบใหม่
                 </button>
             </div>
 
@@ -40,9 +40,9 @@ window.ExamsModule = {
                 <div class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
                 </div>
-                <h3 class="text-lg font-medium text-slate-800">No Exams Found</h3>
-                <p class="text-slate-500 mt-1 mb-6">You haven't created any exams yet.</p>
-                <button class="premium-btn" onclick="ExamsModule.showCreateExam()">Create First Exam</button>
+                <h3 class="text-lg font-medium text-slate-800">ไม่พบชุดข้อสอบ</h3>
+                <p class="text-slate-500 mt-1 mb-6">คุณยังไม่ได้สร้างชุดข้อสอบใดๆ</p>
+                <button class="premium-btn" onclick="ExamsModule.showCreateExam()">สร้างชุดข้อสอบแรก</button>
             </div>
         `;
 
@@ -111,37 +111,37 @@ window.ExamsModule = {
                 <button onclick="ExamsModule.render()" class="p-2 rounded-lg hover:bg-slate-200 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                 </button>
-                <h1 class="text-3xl font-bold text-slate-800">Create New Exam</h1>
+                <h1 class="text-3xl font-bold text-slate-800">สร้างชุดข้อสอบใหม่ (Create New Exam)</h1>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                 <!-- Main Form -->
                 <div class="lg:col-span-2 space-y-6">
                     <div class="glass-panel p-6 rounded-2xl">
-                        <h3 class="text-lg font-bold text-slate-800 mb-4">Basic Information</h3>
+                        <h3 class="text-lg font-bold text-slate-800 mb-4">ข้อมูลพื้นฐาน (Basic Information)</h3>
                         <form id="createExamForm" class="space-y-4" onsubmit="ExamsModule.saveExam(event)">
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                 <div class="sm:col-span-2">
-                                    <label class="block text-sm font-medium text-slate-700 mb-1">Exam Name</label>
-                                    <input type="text" id="examName" class="premium-input" placeholder="e.g. Midterm Mathematics" required>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">ชื่อชุดข้อสอบ (Exam Name)</label>
+                                    <input type="text" id="examName" class="premium-input" placeholder="เช่น กลางภาค คณิตศาสตร์" required>
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700 mb-1">Subject</label>
-                                    <input type="text" id="examSubject" class="premium-input" placeholder="e.g. Math 101" required>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">วิชา (Subject)</label>
+                                    <input type="text" id="examSubject" class="premium-input" placeholder="เช่น Math 101" required>
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700 mb-1">Status</label>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">สถานะ (Status)</label>
                                     <select id="examStatus" class="premium-input">
-                                        <option value="Draft">Draft</option>
-                                        <option value="Active">Active</option>
+                                        <option value="Draft">แบบร่าง (Draft)</option>
+                                        <option value="Active">เปิดใช้งาน (Active)</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700 mb-1">Duration (Minutes)</label>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">เวลาสอบ (Duration - Minutes)</label>
                                     <input type="number" id="examDuration" class="premium-input" value="60" min="5" required>
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700 mb-1">Passing Score (%)</label>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">เกณฑ์ผ่าน (Passing Score - %)</label>
                                     <input type="number" id="examPassing" class="premium-input" value="50" min="1" max="100" required>
                                 </div>
                             </div>
@@ -150,16 +150,16 @@ window.ExamsModule = {
 
                     <div class="glass-panel p-6 rounded-2xl">
                         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
-                            <h3 class="text-lg font-bold text-slate-800">Select Questions</h3>
+                            <h3 class="text-lg font-bold text-slate-800">เลือกข้อสอบ (Select Questions)</h3>
                             <div class="flex gap-2">
-                                <button type="button" class="premium-btn-outline text-xs py-1.5 px-3" onclick="ExamsModule.showQuickAddModal()">+ New Question</button>
-                                <button type="button" class="text-primary-600 text-sm font-semibold hover:text-primary-700" onclick="ExamsModule.loadQuestions()">Refresh</button>
+                                <button type="button" class="premium-btn-outline text-xs py-1.5 px-3" onclick="ExamsModule.showQuickAddModal()">+ เพิ่มแบบด่วน</button>
+                                <button type="button" class="text-primary-600 text-sm font-semibold hover:text-primary-700" onclick="ExamsModule.loadQuestions()">รีเฟรช</button>
                             </div>
                         </div>
                         <div id="questionSelectionList" class="space-y-2 max-h-96 overflow-y-auto pr-2">
                             <div class="text-center py-8 text-slate-500">
                                 <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-primary-600 mx-auto mb-2"></div>
-                                Loading question bank...
+                                กำลังโหลดคลังข้อสอบ...
                             </div>
                         </div>
                     </div>
@@ -168,19 +168,19 @@ window.ExamsModule = {
                 <!-- Summary Sidebar -->
                 <div class="lg:col-span-1">
                     <div class="glass-panel p-6 rounded-2xl sticky top-24">
-                        <h3 class="text-lg font-bold text-slate-800 mb-4">Summary</h3>
+                        <h3 class="text-lg font-bold text-slate-800 mb-4">สรุป (Summary)</h3>
                         <div class="space-y-4 mb-6">
                             <div class="flex justify-between text-sm">
-                                <span class="text-slate-500">Selected Questions:</span>
+                                <span class="text-slate-500">ข้อสอบที่เลือก:</span>
                                 <span class="font-bold text-slate-800" id="selectedQCount">0</span>
                             </div>
                             <div class="flex justify-between text-sm">
-                                <span class="text-slate-500">Total Points:</span>
+                                <span class="text-slate-500">คะแนนรวม:</span>
                                 <span class="font-bold text-primary-600" id="selectedQPoints">0</span>
                             </div>
                         </div>
                         <button type="submit" form="createExamForm" class="premium-btn w-full py-3" id="saveExamBtn">
-                            Create Exam
+                            สร้างชุดข้อสอบ
                         </button>
                     </div>
                 </div>
