@@ -1,6 +1,6 @@
 /**
  * Module 5: Image Library
- */  
+ */
 window.ImagesModule = {
     state: {
         images: [],
