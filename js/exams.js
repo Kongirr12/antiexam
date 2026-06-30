@@ -149,9 +149,12 @@ window.ExamsModule = {
                     </div>
 
                     <div class="glass-panel p-6 rounded-2xl">
-                        <div class="flex justify-between items-center mb-4">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-3">
                             <h3 class="text-lg font-bold text-slate-800">Select Questions</h3>
-                            <button type="button" class="text-primary-600 text-sm font-semibold hover:text-primary-700" onclick="ExamsModule.loadQuestions()">Refresh Bank</button>
+                            <div class="flex gap-2">
+                                <button type="button" class="premium-btn-outline text-xs py-1.5 px-3" onclick="ExamsModule.showQuickAddModal()">+ New Question</button>
+                                <button type="button" class="text-primary-600 text-sm font-semibold hover:text-primary-700" onclick="ExamsModule.loadQuestions()">Refresh</button>
+                            </div>
                         </div>
                         <div id="questionSelectionList" class="space-y-2 max-h-96 overflow-y-auto pr-2">
                             <div class="text-center py-8 text-slate-500">
@@ -180,6 +183,39 @@ window.ExamsModule = {
                             Create Exam
                         </button>
                     </div>
+                </div>
+            </div>
+
+            <!-- Quick Add Question Modal -->
+            <div id="quick-add-modal" class="fixed inset-0 z-[100] hidden items-center justify-center p-4">
+                <div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity" onclick="ExamsModule.closeQuickAddModal()"></div>
+                <div class="glass-panel w-full max-w-2xl rounded-2xl p-6 relative z-10 shadow-2xl animate-fade-in max-h-[90vh] overflow-y-auto">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4">Quick Add Question</h3>
+                    <form id="quickAddForm" onsubmit="ExamsModule.saveQuickQuestion(event)" class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Type</label>
+                                <select id="qaType" class="premium-input" onchange="ExamsModule.toggleQuickAddType()" required>
+                                    <option value="Multiple Choice">Multiple Choice</option>
+                                    <option value="True/False">True/False</option>
+                                    <option value="Essay">Essay</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 mb-1">Points</label>
+                                <input type="number" id="qaScore" class="premium-input" value="1" min="1" step="0.5" required>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">Question Content</label>
+                            <textarea id="qaContent" class="premium-input min-h-[80px]" required></textarea>
+                        </div>
+                        <div id="qaDynamicFields" class="p-4 bg-slate-50/50 rounded-xl border border-slate-100"></div>
+                        <div class="flex justify-end gap-3 pt-4 border-t border-slate-100">
+                            <button type="button" class="premium-btn-outline" onclick="ExamsModule.closeQuickAddModal()">Cancel</button>
+                            <button type="submit" class="premium-btn" id="saveQuickQuestionBtn">Save & Select</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         `;
@@ -225,6 +261,110 @@ window.ExamsModule = {
         document.getElementById('selectedQCount').innerText = checkboxes.length;
         document.getElementById('selectedQPoints').innerText = totalPoints;
     },
+
+    // --- Quick Add Question Logic ---
+    showQuickAddModal() {
+        const modal = document.getElementById('quick-add-modal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        this.toggleQuickAddType();
+    },
+
+    closeQuickAddModal() {
+        const modal = document.getElementById('quick-add-modal');
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+    },
+
+    toggleQuickAddType() {
+        const type = document.getElementById('qaType').value;
+        const container = document.getElementById('qaDynamicFields');
+        let html = '';
+
+        if (type === 'Multiple Choice') {
+            html = `
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2"><input type="radio" name="qaMcqCorrect" value="A" required class="w-4 h-4"><span class="font-bold text-xs">A</span><input type="text" class="premium-input py-2 text-sm qa-mcq-option" required></div>
+                    <div class="flex items-center gap-2"><input type="radio" name="qaMcqCorrect" value="B"><span class="font-bold text-xs">B</span><input type="text" class="premium-input py-2 text-sm qa-mcq-option" required></div>
+                    <div class="flex items-center gap-2"><input type="radio" name="qaMcqCorrect" value="C"><span class="font-bold text-xs">C</span><input type="text" class="premium-input py-2 text-sm qa-mcq-option" required></div>
+                    <div class="flex items-center gap-2"><input type="radio" name="qaMcqCorrect" value="D"><span class="font-bold text-xs">D</span><input type="text" class="premium-input py-2 text-sm qa-mcq-option" required></div>
+                </div>
+            `;
+        } else if (type === 'True/False') {
+            html = `
+                <div class="flex gap-4">
+                    <label class="flex items-center gap-2"><input type="radio" name="qaTfCorrect" value="True" required class="w-4 h-4"><span class="font-bold text-sm">True</span></label>
+                    <label class="flex items-center gap-2"><input type="radio" name="qaTfCorrect" value="False"><span class="font-bold text-sm">False</span></label>
+                </div>
+            `;
+        } else if (type === 'Essay') {
+            html = `<textarea id="qaEssayKeywords" class="premium-input min-h-[60px] text-sm" placeholder="Grading keywords..."></textarea>`;
+        }
+        container.innerHTML = html;
+    },
+
+    async saveQuickQuestion(e) {
+        e.preventDefault();
+        const btn = document.getElementById('saveQuickQuestionBtn');
+        btn.innerHTML = `<div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white mx-auto"></div>`;
+        btn.disabled = true;
+
+        const type = document.getElementById('qaType').value;
+        const payload = {
+            type: type,
+            content: document.getElementById('qaContent').value,
+            score: document.getElementById('qaScore').value,
+            options: null,
+            correctAnswer: null
+        };
+
+        if (type === 'Multiple Choice') {
+            const opts = document.querySelectorAll('.qa-mcq-option');
+            payload.options = [opts[0].value, opts[1].value, opts[2].value, opts[3].value];
+            const correctRadio = document.querySelector('input[name="qaMcqCorrect"]:checked');
+            if (correctRadio) {
+                const map = {'A':0, 'B':1, 'C':2, 'D':3};
+                payload.correctAnswer = payload.options[map[correctRadio.value]];
+            }
+        } else if (type === 'True/False') {
+            payload.options = ['True', 'False'];
+            const correctRadio = document.querySelector('input[name="qaTfCorrect"]:checked');
+            if (correctRadio) payload.correctAnswer = correctRadio.value;
+        } else if (type === 'Essay') {
+            payload.correctAnswer = document.getElementById('qaEssayKeywords').value;
+        }
+
+        try {
+            const newQuestion = await API.post('createQuestion', payload);
+            
+            // Reload questions list
+            await this.loadQuestions();
+            
+            // Auto-check the newly created question
+            setTimeout(() => {
+                const checkbox = document.querySelector(`.exam-question-checkbox[value="${newQuestion.id}"]`);
+                if (checkbox) {
+                    checkbox.checked = true;
+                    this.updateSummary();
+                    
+                    // Flash effect to show it was added
+                    checkbox.closest('label').classList.add('bg-primary-50', 'border-primary-300');
+                    setTimeout(() => {
+                        checkbox.closest('label').classList.remove('bg-primary-50', 'border-primary-300');
+                    }, 2000);
+                }
+            }, 500);
+
+            this.closeQuickAddModal();
+            document.getElementById('quickAddForm').reset();
+        } catch (error) {
+            alert('Failed to save question: ' + error.message);
+        } finally {
+            btn.innerHTML = `Save & Select`;
+            btn.disabled = false;
+        }
+    },
+    // -----------------------------
 
     async saveExam(e) {
         e.preventDefault();
