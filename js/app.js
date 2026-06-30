@@ -48,11 +48,11 @@ const App = {
         this.navActions.innerHTML = `
             <div class="flex items-center gap-4">
                 <span class="text-sm font-medium text-slate-600 hidden sm:block">
-                    Welcome, ${this.state.currentUser.name} 
+                    ยินดีต้อนรับ, ${this.state.currentUser.name} 
                     <span class="ml-2 px-2 py-0.5 rounded-full bg-primary-100 text-primary-700 text-xs font-bold">${this.state.currentUser.role}</span>
                 </span>
                 <button onclick="App.logout()" class="text-sm text-slate-500 hover:text-danger-600 transition-colors font-medium">
-                    Logout
+                    ออกจากระบบ
                 </button>
             </div>
         `;
@@ -121,29 +121,29 @@ const App = {
                         <div class="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-primary-500 to-indigo-600 flex items-center justify-center text-white font-bold text-3xl shadow-lg shadow-primary-500/30 mb-4">
                             E
                         </div>
-                        <h1 class="text-2xl font-bold text-slate-800">Welcome to ExamGuard</h1>
-                        <p class="text-slate-500 mt-2 text-sm">Sign in to continue</p>
+                        <h1 class="text-2xl font-bold text-slate-800">ยินดีต้อนรับสู่ ExamGuard</h1>
+                        <p class="text-slate-500 mt-2 text-sm">เข้าสู่ระบบเพื่อดำเนินการต่อ</p>
                     </div>
                     
                     <form id="loginForm" class="relative z-10 space-y-5" onsubmit="App.handleLogin(event)">
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Email or User ID</label>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">อีเมล หรือ รหัสผู้ใช้งาน</label>
                             <input type="text" id="loginId" class="premium-input" placeholder="admin@examguard.com" required>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">PIN / Password</label>
+                            <label class="block text-sm font-medium text-slate-700 mb-1">รหัสผ่าน (PIN / Password)</label>
                             <input type="password" id="loginPassword" class="premium-input" placeholder="••••••••" required>
                         </div>
                         <div class="pt-2">
                             <button type="submit" class="premium-btn w-full py-3 text-base" id="loginBtn">
-                                Sign In
+                                เข้าสู่ระบบ
                             </button>
                         </div>
                     </form>
 
                     <!-- Demo hints -->
                     <div class="mt-8 pt-6 border-t border-slate-100 text-center">
-                        <p class="text-xs text-slate-400">For demo, just click Sign In (simulates Admin login)</p>
+                        <p class="text-xs text-slate-400">สำหรับเดโม่ กดเข้าสู่ระบบได้เลย (จำลองแอดมิน)</p>
                     </div>
                 </div>
             </div>
@@ -180,8 +180,8 @@ const App = {
         this.container.innerHTML = `
             <div class="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                 <div>
-                    <h1 class="text-3xl font-bold text-slate-800 tracking-tight">Admin Dashboard</h1>
-                    <p class="text-slate-500 mt-1">Manage users, exams, and settings.</p>
+                    <h1 class="text-3xl font-bold text-slate-800 tracking-tight">แดชบอร์ดผู้ดูแลระบบ</h1>
+                    <p class="text-slate-500 mt-1">จัดการผู้ใช้, ชุดข้อสอบ, และการตั้งค่า</p>
                 </div>
             </div>
 
@@ -193,7 +193,7 @@ const App = {
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-slate-500">Total Users</p>
+                            <p class="text-sm font-medium text-slate-500">ผู้ใช้ทั้งหมด</p>
                             <p class="text-2xl font-bold text-slate-800">1,248</p>
                         </div>
                     </div>
@@ -205,7 +205,7 @@ const App = {
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path></svg>
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-slate-500">Active Exams</p>
+                            <p class="text-sm font-medium text-slate-500">ชุดข้อสอบที่เปิดใช้งาน</p>
                             <p class="text-2xl font-bold text-slate-800">12</p>
                         </div>
                     </div>
@@ -217,7 +217,7 @@ const App = {
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-slate-500">Submissions</p>
+                            <p class="text-sm font-medium text-slate-500">ส่งข้อสอบแล้ว</p>
                             <p class="text-2xl font-bold text-slate-800">842</p>
                         </div>
                     </div>
@@ -229,7 +229,7 @@ const App = {
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
                         </div>
                         <div>
-                            <p class="text-sm font-medium text-slate-500">Cheat Alerts</p>
+                            <p class="text-sm font-medium text-slate-500">การแจ้งเตือนทุจริต</p>
                             <p class="text-2xl font-bold text-rose-600">3</p>
                         </div>
                     </div>
@@ -239,56 +239,56 @@ const App = {
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <!-- Quick Actions -->
                 <div class="glass-panel rounded-2xl p-6">
-                    <h3 class="text-lg font-bold text-slate-800 mb-4">Quick Actions</h3>
+                    <h3 class="text-lg font-bold text-slate-800 mb-4">เมนูลัด (Quick Actions)</h3>
                     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
                         <button onclick="App.navigate('users')" class="flex flex-col items-center justify-center gap-3 p-4 rounded-xl border border-slate-100 bg-white hover:border-primary-200 hover:shadow-md transition-all group">
                             <div class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-primary-50 group-hover:text-primary-600 transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg>
                             </div>
-                            <span class="text-sm font-medium text-slate-700">Add User</span>
+                            <span class="text-sm font-medium text-slate-700">จัดการผู้ใช้</span>
                         </button>
                         <button onclick="App.navigate('exams')" class="flex flex-col items-center justify-center gap-3 p-4 rounded-xl border border-slate-100 bg-white hover:border-primary-200 hover:shadow-md transition-all group">
                             <div class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-primary-50 group-hover:text-primary-600 transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 13h6m-3-3v6m5 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
                             </div>
-                            <span class="text-sm font-medium text-slate-700">Create Exam</span>
+                            <span class="text-sm font-medium text-slate-700">สร้างชุดข้อสอบ</span>
                         </button>
                         <button onclick="App.navigate('questions')" class="flex flex-col items-center justify-center gap-3 p-4 rounded-xl border border-slate-100 bg-white hover:border-primary-200 hover:shadow-md transition-all group">
                             <div class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-primary-50 group-hover:text-primary-600 transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                             </div>
-                            <span class="text-sm font-medium text-slate-700">Questions</span>
+                            <span class="text-sm font-medium text-slate-700">คลังข้อสอบ</span>
                         </button>
                         <button onclick="App.navigate('images')" class="flex flex-col items-center justify-center gap-3 p-4 rounded-xl border border-slate-100 bg-white hover:border-primary-200 hover:shadow-md transition-all group">
                             <div class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-primary-50 group-hover:text-primary-600 transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                             </div>
-                            <span class="text-sm font-medium text-slate-700">Images</span>
+                            <span class="text-sm font-medium text-slate-700">คลังรูปภาพ</span>
                         </button>
                         <button onclick="App.navigate('proctoring')" class="flex flex-col items-center justify-center gap-3 p-4 rounded-xl border border-slate-100 bg-white hover:border-primary-200 hover:shadow-md transition-all group">
                             <div class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-rose-50 group-hover:text-rose-600 transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
                             </div>
-                            <span class="text-sm font-medium text-slate-700">Live Proctor</span>
+                            <span class="text-sm font-medium text-slate-700">คุมสอบสด</span>
                         </button>
                         <button onclick="App.navigate('grading')" class="flex flex-col items-center justify-center gap-3 p-4 rounded-xl border border-slate-100 bg-white hover:border-primary-200 hover:shadow-md transition-all group">
                             <div class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-emerald-50 group-hover:text-emerald-600 transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                             </div>
-                            <span class="text-sm font-medium text-slate-700">Grading</span>
+                            <span class="text-sm font-medium text-slate-700">ตรวจข้อสอบ</span>
                         </button>
                         <button onclick="App.navigate('results')" class="flex flex-col items-center justify-center gap-3 p-4 rounded-xl border border-slate-100 bg-white hover:border-primary-200 hover:shadow-md transition-all group">
                             <div class="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
                             </div>
-                            <span class="text-sm font-medium text-slate-700">Results</span>
+                            <span class="text-sm font-medium text-slate-700">ผลสอบ</span>
                         </button>
                     </div>
                 </div>
 
                 <!-- Recent Activity -->
                 <div class="glass-panel rounded-2xl p-6">
-                    <h3 class="text-lg font-bold text-slate-800 mb-4">Live Activity</h3>
+                    <h3 class="text-lg font-bold text-slate-800 mb-4">ความเคลื่อนไหวล่าสุด (Live Activity)</h3>
                     <div class="space-y-4">
                         <div class="flex items-center gap-3">
                             <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
