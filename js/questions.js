@@ -36,7 +36,7 @@ window.QuestionsModule = {
                 <div class="flex flex-col md:flex-row gap-4 items-center justify-between">
                     <div class="relative w-full md:w-96 text-slate-400 focus-within:text-primary-600 transition-colors">
                         <svg class="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                        <input type="text" placeholder="ค้นหาข้อสอบ..." class="premium-input pl-12" id="searchQ">
+                        <input type="text" placeholder="ค้นหาข้อสอบ..." class="premium-input !pl-12" id="searchQ">
                     </div>
                     <div class="flex gap-3 w-full md:w-auto">
                         <select class="premium-input bg-white w-full md:w-auto" id="filterType">
