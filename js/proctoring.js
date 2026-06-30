@@ -1,40 +1,40 @@
-/** 
+/**
  * Module 8: Live Proctoring
- */ 
+ */
 window.ProctoringModule = {
     state: {
         sessions: [],
         isLoading: true,
         interval: null
     },
-    
+
     async render() {
         App.container.innerHTML = `
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
                 <div class="flex items-center gap-4">
                     <button onclick="App.navigate('dashboard')" class="p-2 rounded-lg hover:bg-slate-200 transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                     </button>
                     <div>
-                        <h1 class="text-3xl font-bold text-slate-800 tracking-tight">Live Proctoring</h1>
-                        <p class="text-slate-500 text-sm">Monitor student progress and cheating alerts in real-time.</p>
+                        <h1 class="text-3xl font-bold text-slate-800 tracking-tight">คุมสอบสด (Live Proctoring)</h1>
+                        <p class="text-slate-500 text-sm">ตรวจสอบสถานะการสอบและพฤติกรรมทุจริตแบบเรียลไทม์</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 text-emerald-600 rounded-full text-sm font-bold border border-emerald-200">
                     <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                    Live Updates Active
+                    กำลังอัปเดตสถานะสด (Live)
                 </div>
             </div>
 
             <!-- Toolbar -->
-            <div class="glass-panel p-4 rounded-xl flex gap-4 mb-6">
+            <div class="glass-panel p-4 rounded-xl flex flex-col md:flex-row gap-4 mb-6">
                 <select class="premium-input w-full md:w-64" id="proc-exam-select">
-                    <option value="">All Active Exams</option>
-                    <option value="E01">Midterm Math</option>
+                    <option value="">ทุกชุดข้อสอบที่กำลังสอบ</option>
+                    <option value="E01">กลางภาค คณิตศาสตร์</option>
                 </select>
                 <div class="relative flex-grow">
                     <svg class="w-5 h-5 absolute left-3 top-2.5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    <input type="text" placeholder="Search student name or ID..." class="premium-input pl-10">
+                    <input type="text" placeholder="ค้นหาชื่อนักเรียน หรือ รหัสประจำตัว..." class="premium-input !pl-10">
                 </div>
             </div>
 
