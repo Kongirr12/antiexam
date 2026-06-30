@@ -6,7 +6,7 @@ window.QuestionsModule = {
         questions: [],
         isLoading: true
     },
-   
+
     async render() {
         App.container.innerHTML = `
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
@@ -134,7 +134,199 @@ window.QuestionsModule = {
     },
 
     showCreateQuestion() {
-        alert("Simulating Create Question Form. Supports: Single Choice, Multiple Choice, True/False, Matching, Ordering, Grid, Fill-in-the-blanks, Essay.");
+        App.container.innerHTML = `
+            <div class="flex items-center gap-4 mb-8">
+                <button onclick="QuestionsModule.render()" class="p-2 rounded-lg hover:bg-slate-200 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                </button>
+                <h1 class="text-3xl font-bold text-slate-800">Create New Question</h1>
+            </div>
+
+            <div class="max-w-4xl mx-auto glass-panel p-6 sm:p-8 rounded-2xl">
+                <form id="createQuestionForm" onsubmit="QuestionsModule.saveQuestion(event)" class="space-y-6">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Question Type</label>
+                            <select id="qType" class="premium-input" onchange="QuestionsModule.toggleTypeFields()" required>
+                                <option value="Multiple Choice">Multiple Choice</option>
+                                <option value="True/False">True/False</option>
+                                <option value="Matching">Matching</option>
+                                <option value="Essay">Essay</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 mb-2">Points / Score</label>
+                            <input type="number" id="qScore" class="premium-input" value="1" min="1" step="0.5" required>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">Question Content (Supports LaTeX like $E=mc^2$)</label>
+                        <textarea id="qContent" class="premium-input min-h-[120px]" placeholder="Type your question here..." required></textarea>
+                    </div>
+
+                    <!-- Dynamic Fields Container -->
+                    <div id="dynamicFields" class="p-5 bg-slate-50/50 rounded-xl border border-slate-100">
+                        <!-- Will be populated based on selected type -->
+                    </div>
+
+                    <div class="pt-4 border-t border-slate-100 flex justify-end gap-3">
+                        <button type="button" class="premium-btn-outline" onclick="QuestionsModule.render()">Cancel</button>
+                        <button type="submit" class="premium-btn px-8" id="saveQuestionBtn">Save Question</button>
+                    </div>
+                </form>
+            </div>
+        `;
+
+        // Initialize with default type
+        this.toggleTypeFields();
+    },
+
+    toggleTypeFields() {
+        const type = document.getElementById('qType').value;
+        const container = document.getElementById('dynamicFields');
+        let html = '';
+
+        if (type === 'Multiple Choice') {
+            html = `
+                <h4 class="font-bold text-slate-800 mb-4 text-sm">Options & Answer</h4>
+                <div class="space-y-3">
+                    <div class="flex items-center gap-3">
+                        <input type="radio" name="mcqCorrect" value="A" class="w-4 h-4 text-primary-600 focus:ring-primary-500" required>
+                        <span class="font-bold text-slate-500 w-6">A.</span>
+                        <input type="text" class="premium-input flex-grow mcq-option" placeholder="Option A" required>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <input type="radio" name="mcqCorrect" value="B" class="w-4 h-4 text-primary-600 focus:ring-primary-500">
+                        <span class="font-bold text-slate-500 w-6">B.</span>
+                        <input type="text" class="premium-input flex-grow mcq-option" placeholder="Option B" required>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <input type="radio" name="mcqCorrect" value="C" class="w-4 h-4 text-primary-600 focus:ring-primary-500">
+                        <span class="font-bold text-slate-500 w-6">C.</span>
+                        <input type="text" class="premium-input flex-grow mcq-option" placeholder="Option C" required>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <input type="radio" name="mcqCorrect" value="D" class="w-4 h-4 text-primary-600 focus:ring-primary-500">
+                        <span class="font-bold text-slate-500 w-6">D.</span>
+                        <input type="text" class="premium-input flex-grow mcq-option" placeholder="Option D" required>
+                    </div>
+                </div>
+            `;
+        } 
+        else if (type === 'True/False') {
+            html = `
+                <h4 class="font-bold text-slate-800 mb-4 text-sm">Correct Answer</h4>
+                <div class="flex gap-6">
+                    <label class="flex items-center gap-2 cursor-pointer p-4 glass-panel rounded-xl flex-1 hover:border-primary-300">
+                        <input type="radio" name="tfCorrect" value="True" class="w-5 h-5 text-primary-600 focus:ring-primary-500" required>
+                        <span class="font-bold text-slate-700">True</span>
+                    </label>
+                    <label class="flex items-center gap-2 cursor-pointer p-4 glass-panel rounded-xl flex-1 hover:border-primary-300">
+                        <input type="radio" name="tfCorrect" value="False" class="w-5 h-5 text-primary-600 focus:ring-primary-500">
+                        <span class="font-bold text-slate-700">False</span>
+                    </label>
+                </div>
+            `;
+        }
+        else if (type === 'Matching') {
+            html = `
+                <div class="flex justify-between items-center mb-4">
+                    <h4 class="font-bold text-slate-800 text-sm">Matching Pairs</h4>
+                    <button type="button" class="text-xs text-primary-600 hover:text-primary-700 font-bold" onclick="QuestionsModule.addMatchingPair()">+ Add Pair</button>
+                </div>
+                <p class="text-xs text-slate-500 mb-4">Enter the correct matching pairs. They will be shuffled automatically during the exam.</p>
+                <div id="matchingPairsContainer" class="space-y-3">
+                    <div class="flex items-center gap-3 matching-pair">
+                        <input type="text" class="premium-input flex-1 match-left" placeholder="Item A" required>
+                        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                        <input type="text" class="premium-input flex-1 match-right" placeholder="Matches with A" required>
+                        <button type="button" class="text-danger-400 hover:text-danger-600 p-2" onclick="this.parentElement.remove()"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+                    </div>
+                    <div class="flex items-center gap-3 matching-pair">
+                        <input type="text" class="premium-input flex-1 match-left" placeholder="Item B" required>
+                        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+                        <input type="text" class="premium-input flex-1 match-right" placeholder="Matches with B" required>
+                        <button type="button" class="text-danger-400 hover:text-danger-600 p-2" onclick="this.parentElement.remove()"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+                    </div>
+                </div>
+            `;
+        }
+        else if (type === 'Essay') {
+            html = `
+                <h4 class="font-bold text-slate-800 mb-4 text-sm">Grading Guide / Keywords (Optional)</h4>
+                <textarea id="essayKeywords" class="premium-input min-h-[80px]" placeholder="List key concepts or words the student must mention to get full marks..."></textarea>
+            `;
+        }
+
+        container.innerHTML = html;
+    },
+
+    addMatchingPair() {
+        const container = document.getElementById('matchingPairsContainer');
+        const div = document.createElement('div');
+        div.className = 'flex items-center gap-3 matching-pair';
+        div.innerHTML = `
+            <input type="text" class="premium-input flex-1 match-left" placeholder="Item" required>
+            <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"></path></svg>
+            <input type="text" class="premium-input flex-1 match-right" placeholder="Matches with" required>
+            <button type="button" class="text-danger-400 hover:text-danger-600 p-2" onclick="this.parentElement.remove()"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
+        `;
+        container.appendChild(div);
+    },
+
+    async saveQuestion(e) {
+        e.preventDefault();
+        const btn = document.getElementById('saveQuestionBtn');
+        btn.innerHTML = `<div class="animate-spin rounded-full h-5 w-5 border-b-2 border-white mx-auto"></div>`;
+        btn.disabled = true;
+
+        const type = document.getElementById('qType').value;
+        const payload = {
+            type: type,
+            content: document.getElementById('qContent').value,
+            score: document.getElementById('qScore').value,
+            options: null,
+            correctAnswer: null
+        };
+
+        if (type === 'Multiple Choice') {
+            const opts = document.querySelectorAll('.mcq-option');
+            payload.options = [opts[0].value, opts[1].value, opts[2].value, opts[3].value];
+            const correctRadio = document.querySelector('input[name="mcqCorrect"]:checked');
+            if (correctRadio) {
+                const map = {'A':0, 'B':1, 'C':2, 'D':3};
+                payload.correctAnswer = payload.options[map[correctRadio.value]];
+            }
+        } 
+        else if (type === 'True/False') {
+            payload.options = ['True', 'False'];
+            const correctRadio = document.querySelector('input[name="tfCorrect"]:checked');
+            if (correctRadio) payload.correctAnswer = correctRadio.value;
+        }
+        else if (type === 'Matching') {
+            const pairs = [];
+            document.querySelectorAll('.matching-pair').forEach(p => {
+                const left = p.querySelector('.match-left').value;
+                const right = p.querySelector('.match-right').value;
+                pairs.push({ left, right });
+            });
+            payload.options = pairs; // Store array of objects for matching
+            payload.correctAnswer = 'Matching'; // Or JSON string representation
+        }
+        else if (type === 'Essay') {
+            payload.correctAnswer = document.getElementById('essayKeywords').value;
+        }
+
+        try {
+            await API.post('createQuestion', payload);
+            this.render(); // Go back to list
+        } catch (error) {
+            alert('Failed to save question: ' + error.message);
+            btn.innerHTML = `Save Question`;
+            btn.disabled = false;
+        }
     },
     
     showAIPrompt() {
