@@ -343,7 +343,7 @@ window.QuestionsModule = {
     generatePrompt() {
         const topic = document.getElementById('ai-topic').value || '[Topic]';
         const level = document.getElementById('ai-level').value;
-        const prompt = \`Act as an expert educator. Create 5 multiple-choice questions about "\${topic}" aimed at the "\${level}" level of Bloom's Taxonomy. Format the output clearly with the question, 4 options (A,B,C,D), and specify the correct answer with a brief explanation.\`;
+        const prompt = `Act as an expert educator. Create 5 multiple-choice questions about "${topic}" aimed at the "${level}" level of Bloom's Taxonomy. Format the output clearly with the question, 4 options (A,B,C,D), and specify the correct answer with a brief explanation.`;
         document.getElementById('ai-output').value = prompt;
     }
 };
