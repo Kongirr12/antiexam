@@ -6,7 +6,7 @@ window.ResultsModule = {
         stats: null,
         isLoading: true
     },
- 
+
     async render() {
         App.container.innerHTML = `
             <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
@@ -15,18 +15,18 @@ window.ResultsModule = {
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                     </button>
                     <div>
-                        <h1 class="text-3xl font-bold text-slate-800 tracking-tight">Results & Statistics</h1>
-                        <p class="text-slate-500 text-sm">Analyze exam performance and export reports.</p>
+                        <h1 class="text-3xl font-bold text-slate-800 tracking-tight">ผลสอบและสถิติ (Results & Statistics)</h1>
+                        <p class="text-slate-500 text-sm">วิเคราะห์ผลคะแนนและส่งออกรายงาน</p>
                     </div>
                 </div>
-                <div class="flex gap-3">
+                <div class="flex flex-wrap gap-3">
                     <button class="premium-btn-outline gap-2" onclick="ResultsModule.exportData('csv')">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
-                        Export CSV
+                        ส่งออก CSV
                     </button>
                     <button class="premium-btn gap-2 bg-indigo-600 hover:bg-indigo-700" onclick="ResultsModule.exportData('pdf')">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path></svg>
-                        Generate PDF
+                        สร้าง PDF
                     </button>
                 </div>
             </div>
