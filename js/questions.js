@@ -7,23 +7,29 @@ window.QuestionsModule = {
         isLoading: true,
         editingId: null
     },
- 
+
     async render() {
         App.container.innerHTML = `
-            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
                 <div class="flex items-center gap-4">
                     <button onclick="App.navigate('dashboard')" class="p-2 rounded-lg hover:bg-slate-200 transition-colors">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                     </button>
                     <div>
-                        <h1 class="text-3xl font-bold text-slate-800 tracking-tight">Question Bank</h1>
-                        <p class="text-slate-500 text-sm">Create and manage questions with LaTeX & images.</p>
+                        <h1 class="text-3xl font-bold text-slate-800 tracking-tight">คลังข้อสอบ (Question Bank)</h1>
+                        <p class="text-slate-500 text-sm">สร้างและจัดการข้อสอบ (รองรับ LaTeX และรูปภาพ)</p>
                     </div>
-            <div class="flex items-center gap-4 mb-8">
-                <button onclick="App.navigate('dashboard')" class="p-2 rounded-lg hover:bg-slate-200 transition-colors">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                </button>
-                <h1 class="text-3xl font-bold text-slate-800 tracking-tight">คลังข้อสอบ (Question Bank)</h1>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    <button class="premium-btn-outline gap-2" onclick="QuestionsModule.showAIPrompt()">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                        AI ออกข้อสอบ
+                    </button>
+                    <button class="premium-btn gap-2" onclick="QuestionsModule.showCreateQuestion()">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        เพิ่มข้อสอบใหม่
+                    </button>
+                </div>
             </div>
 
             <div class="glass-panel p-6 rounded-2xl mb-8">
