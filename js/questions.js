@@ -4,7 +4,8 @@
 window.QuestionsModule = {
     state: {
         questions: [],
-        isLoading: true
+        isLoading: true,
+        editingId: null
     },
 
     async render() {
@@ -122,7 +123,7 @@ window.QuestionsModule = {
                     </div>
                 </div>
                 <div class="flex flex-row md:flex-col gap-2 items-center md:items-end justify-center border-t md:border-t-0 md:border-l border-slate-100 pt-4 md:pt-0 md:pl-4">
-                    <button class="text-slate-400 hover:text-primary-600 p-2 rounded-lg hover:bg-primary-50 transition-colors" title="Edit">
+                    <button class="text-slate-400 hover:text-primary-600 p-2 rounded-lg hover:bg-primary-50 transition-colors" title="Edit" onclick="QuestionsModule.editQuestion('${q.id}')">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                     </button>
                     <button class="text-slate-400 hover:text-danger-600 p-2 rounded-lg hover:bg-danger-50 transition-colors" title="Delete" onclick="QuestionsModule.deleteQuestion('${q.id}')">
@@ -133,13 +134,15 @@ window.QuestionsModule = {
         `).join('');
     },
 
-    showCreateQuestion() {
+    showCreateQuestion(existingData = null) {
+        if (!existingData) this.state.editingId = null;
+
         App.container.innerHTML = `
             <div class="flex items-center gap-4 mb-8">
                 <button onclick="QuestionsModule.render()" class="p-2 rounded-lg hover:bg-slate-200 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                 </button>
-                <h1 class="text-3xl font-bold text-slate-800">Create New Question</h1>
+                <h1 class="text-3xl font-bold text-slate-800">${existingData ? 'Edit Question' : 'Create New Question'}</h1>
             </div>
 
             <div class="max-w-4xl mx-auto glass-panel p-6 sm:p-8 rounded-2xl">
@@ -157,7 +160,7 @@ window.QuestionsModule = {
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-slate-700 mb-2">Points / Score</label>
-                            <input type="number" id="qScore" class="premium-input" value="1" min="1" step="0.5" required>
+                            <input type="number" id="qScore" class="premium-input" value="${existingData ? existingData.score : 1}" min="1" step="0.5" required>
                         </div>
                     </div>
 
@@ -180,17 +183,29 @@ window.QuestionsModule = {
 
                     <div class="pt-4 border-t border-slate-100 flex justify-end gap-3">
                         <button type="button" class="premium-btn-outline" onclick="QuestionsModule.render()">Cancel</button>
-                        <button type="submit" class="premium-btn px-8" id="saveQuestionBtn">Save Question</button>
+                        <button type="submit" class="premium-btn px-8" id="saveQuestionBtn">${existingData ? 'Update Question' : 'Save Question'}</button>
                     </div>
                 </form>
             </div>
         `;
 
-        // Initialize with default type
-        this.toggleTypeFields();
+        if (existingData) {
+            document.getElementById('qType').value = existingData.type;
+            // Pre-fill content taking care of HTML entities if any, setting via value is safe
+            document.getElementById('qContent').value = existingData.content;
+        }
+
+        this.toggleTypeFields(existingData);
     },
 
-    toggleTypeFields() {
+    editQuestion(id) {
+        const q = this.state.questions.find(x => x.id === id);
+        if (!q) return;
+        this.state.editingId = id;
+        this.showCreateQuestion(q);
+    },
+
+    toggleTypeFields(existingData = null) {
         const type = document.getElementById('qType').value;
         const container = document.getElementById('dynamicFields');
         let html = '';
@@ -268,9 +283,45 @@ window.QuestionsModule = {
         }
 
         container.innerHTML = html;
+
+        if (existingData && existingData.type === type) {
+            setTimeout(() => {
+                if (type === 'Multiple Choice') {
+                    const opts = document.querySelectorAll('.mcq-option');
+                    if (existingData.options && existingData.options.length === 4) {
+                        opts[0].value = existingData.options[0];
+                        opts[1].value = existingData.options[1];
+                        opts[2].value = existingData.options[2];
+                        opts[3].value = existingData.options[3];
+                    }
+                    const map = {0:'A', 1:'B', 2:'C', 3:'D'};
+                    const correctIdx = existingData.options ? existingData.options.indexOf(existingData.correctAnswer) : -1;
+                    if (correctIdx !== -1) {
+                        const radio = document.querySelector(`input[name="mcqCorrect"][value="${map[correctIdx]}"]`);
+                        if (radio) radio.checked = true;
+                    }
+                } 
+                else if (type === 'True/False') {
+                    const radio = document.querySelector(`input[name="tfCorrect"][value="${existingData.correctAnswer}"]`);
+                    if (radio) radio.checked = true;
+                }
+                else if (type === 'Matching') {
+                    const matchContainer = document.getElementById('matchingPairsContainer');
+                    if (existingData.options && Array.isArray(existingData.options)) {
+                        matchContainer.innerHTML = '';
+                        existingData.options.forEach(pair => {
+                            QuestionsModule.addMatchingPair(pair.left, pair.right);
+                        });
+                    }
+                }
+                else if (type === 'Essay') {
+                    document.getElementById('essayKeywords').value = existingData.correctAnswer || '';
+                }
+            }, 0);
+        }
     },
 
-    addMatchingPair() {
+    addMatchingPair(leftStr = '', rightStr = '') {
         const container = document.getElementById('matchingPairsContainer');
         const div = document.createElement('div');
         div.className = 'flex items-center gap-3 matching-pair';
@@ -280,6 +331,8 @@ window.QuestionsModule = {
             <input type="text" class="premium-input flex-1 match-right" placeholder="Matches with" required>
             <button type="button" class="text-danger-400 hover:text-danger-600 p-2" onclick="this.parentElement.remove()"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button>
         `;
+        div.querySelector('.match-left').value = leftStr;
+        div.querySelector('.match-right').value = rightStr;
         container.appendChild(div);
     },
 
@@ -327,11 +380,17 @@ window.QuestionsModule = {
         }
 
         try {
-            await API.post('createQuestion', payload);
+            if (this.state.editingId) {
+                payload.id = this.state.editingId;
+                await API.post('updateQuestion', payload);
+                this.state.editingId = null;
+            } else {
+                await API.post('createQuestion', payload);
+            }
             this.render(); // Go back to list
         } catch (error) {
             alert('Failed to save question: ' + error.message);
-            btn.innerHTML = `Save Question`;
+            btn.innerHTML = this.state.editingId ? `Update Question` : `Save Question`;
             btn.disabled = false;
         }
     },
