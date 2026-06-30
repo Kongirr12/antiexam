@@ -6,7 +6,7 @@ window.ExamsModule = {
         exams: [],
         isLoading: true
     },
- 
+
     async render() {
         App.container.innerHTML = `
             <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
@@ -106,6 +106,156 @@ window.ExamsModule = {
     },
 
     showCreateExam() {
-        alert("Simulating Create Exam Form (Module 2). This will route to a dedicated form builder view in the next phase.");
+        App.container.innerHTML = `
+            <div class="flex items-center gap-4 mb-8">
+                <button onclick="ExamsModule.render()" class="p-2 rounded-lg hover:bg-slate-200 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                </button>
+                <h1 class="text-3xl font-bold text-slate-800">Create New Exam</h1>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <!-- Main Form -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="glass-panel p-6 rounded-2xl">
+                        <h3 class="text-lg font-bold text-slate-800 mb-4">Basic Information</h3>
+                        <form id="createExamForm" class="space-y-4" onsubmit="ExamsModule.saveExam(event)">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div class="sm:col-span-2">
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">Exam Name</label>
+                                    <input type="text" id="examName" class="premium-input" placeholder="e.g. Midterm Mathematics" required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">Subject</label>
+                                    <input type="text" id="examSubject" class="premium-input" placeholder="e.g. Math 101" required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">Status</label>
+                                    <select id="examStatus" class="premium-input">
+                                        <option value="Draft">Draft</option>
+                                        <option value="Active">Active</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">Duration (Minutes)</label>
+                                    <input type="number" id="examDuration" class="premium-input" value="60" min="5" required>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-slate-700 mb-1">Passing Score (%)</label>
+                                    <input type="number" id="examPassing" class="premium-input" value="50" min="1" max="100" required>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <div class="glass-panel p-6 rounded-2xl">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-bold text-slate-800">Select Questions</h3>
+                            <button type="button" class="text-primary-600 text-sm font-semibold hover:text-primary-700" onclick="ExamsModule.loadQuestions()">Refresh Bank</button>
+                        </div>
+                        <div id="questionSelectionList" class="space-y-2 max-h-96 overflow-y-auto pr-2">
+                            <div class="text-center py-8 text-slate-500">
+                                <div class="animate-spin rounded-full h-6 w-6 border-b-2 border-primary-600 mx-auto mb-2"></div>
+                                Loading question bank...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Summary Sidebar -->
+                <div class="lg:col-span-1">
+                    <div class="glass-panel p-6 rounded-2xl sticky top-24">
+                        <h3 class="text-lg font-bold text-slate-800 mb-4">Summary</h3>
+                        <div class="space-y-4 mb-6">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-slate-500">Selected Questions:</span>
+                                <span class="font-bold text-slate-800" id="selectedQCount">0</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-slate-500">Total Points:</span>
+                                <span class="font-bold text-primary-600" id="selectedQPoints">0</span>
+                            </div>
+                        </div>
+                        <button type="submit" form="createExamForm" class="premium-btn w-full py-3" id="saveExamBtn">
+                            Create Exam
+                        </button>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        this.loadQuestions();
+    },
+
+    async loadQuestions() {
+        const container = document.getElementById('questionSelectionList');
+        try {
+            const questions = await API.post('getQuestions');
+            if (questions.length === 0) {
+                container.innerHTML = `<p class="text-center text-slate-500 py-4">No questions found in the Question Bank.</p>`;
+                return;
+            }
+
+            container.innerHTML = questions.map(q => `
+                <label class="flex items-start gap-3 p-3 rounded-xl border border-slate-100 hover:bg-slate-50 cursor-pointer transition-colors">
+                    <input type="checkbox" class="mt-1 w-4 h-4 text-primary-600 rounded border-slate-300 exam-question-checkbox" 
+                           value="${q.id}" data-score="${q.score}" onchange="ExamsModule.updateSummary()">
+                    <div class="flex-grow">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-slate-200 text-slate-700">${q.type}</span>
+                            <span class="text-xs font-bold text-primary-600">${q.score} pts</span>
+                        </div>
+                        <p class="text-sm text-slate-700 line-clamp-2">${q.content}</p>
+                    </div>
+                </label>
+            `).join('');
+            this.updateSummary();
+        } catch(e) {
+            container.innerHTML = `<p class="text-center text-danger-500 py-4">Failed to load questions.</p>`;
+        }
+    },
+
+    updateSummary() {
+        const checkboxes = document.querySelectorAll('.exam-question-checkbox:checked');
+        let totalPoints = 0;
+        checkboxes.forEach(cb => {
+            totalPoints += parseFloat(cb.dataset.score || 0);
+        });
+        
+        document.getElementById('selectedQCount').innerText = checkboxes.length;
+        document.getElementById('selectedQPoints').innerText = totalPoints;
+    },
+
+    async saveExam(e) {
+        e.preventDefault();
+        const btn = document.getElementById('saveExamBtn');
+        btn.innerHTML = `<div class="animate-spin rounded-full h-5 w-5 border-b-2 border-white mx-auto"></div>`;
+        btn.disabled = true;
+
+        const selectedQ = Array.from(document.querySelectorAll('.exam-question-checkbox:checked')).map(cb => cb.value);
+        
+        if (selectedQ.length === 0 && !confirm("You haven't selected any questions. Create exam anyway?")) {
+            btn.innerHTML = `Create Exam`;
+            btn.disabled = false;
+            return;
+        }
+
+        const data = {
+            name: document.getElementById('examName').value,
+            subject: document.getElementById('examSubject').value,
+            status: document.getElementById('examStatus').value,
+            duration: document.getElementById('examDuration').value,
+            passing: document.getElementById('examPassing').value,
+            questionIds: selectedQ
+        };
+
+        try {
+            await API.post('createExam', data);
+            App.navigate('exams');
+        } catch (error) {
+            alert('Failed to create exam: ' + error.message);
+            btn.innerHTML = `Create Exam`;
+            btn.disabled = false;
+        }
     }
 };
