@@ -207,7 +207,15 @@ window.ExamsModule = {
                             </div>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-slate-700 mb-1">Question Content</label>
+                            <div class="flex justify-between items-center mb-1">
+                                <label class="block text-sm font-medium text-slate-700">Question Content</label>
+                                <label class="cursor-pointer text-xs font-bold text-primary-600 hover:text-primary-700 flex items-center gap-1">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+                                    Insert Image
+                                    <!-- Use QuestionsModule if loaded, otherwise fallback or duplicate -->
+                                    <input type="file" accept="image/*" class="hidden" onchange="window.QuestionsModule ? window.QuestionsModule.handleImageUpload(event, 'qaContent') : ExamsModule.handleImageUpload(event, 'qaContent')">
+                                </label>
+                            </div>
                             <textarea id="qaContent" class="premium-input min-h-[80px]" required></textarea>
                         </div>
                         <div id="qaDynamicFields" class="p-4 bg-slate-50/50 rounded-xl border border-slate-100"></div>
@@ -363,6 +371,40 @@ window.ExamsModule = {
             btn.innerHTML = `Save & Select`;
             btn.disabled = false;
         }
+    },
+
+    handleImageUpload(event, targetId) {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const img = new Image();
+            img.onload = () => {
+                const canvas = document.createElement('canvas');
+                const MAX_WIDTH = 600;
+                let width = img.width;
+                let height = img.height;
+                
+                if (width > MAX_WIDTH) {
+                    height *= MAX_WIDTH / width;
+                    width = MAX_WIDTH;
+                }
+                
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+                
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                const textarea = document.getElementById(targetId);
+                const imageMarkdown = `\n<img src="${dataUrl}" class="max-w-full rounded-lg mt-3 border border-slate-200">\n`;
+                textarea.value = textarea.value + imageMarkdown;
+            };
+            img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+        event.target.value = ''; 
     },
     // -----------------------------
 
